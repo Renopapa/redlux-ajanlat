@@ -13,15 +13,10 @@ export PUPPETEER_CACHE_DIR=/opt/render/.cache/puppeteer
 mkdir -p $PUPPETEER_CACHE_DIR
 
 # Install Puppeteer and download Chrome
+# A PUPPETEER_CACHE_DIR beállítás miatt a Chrome közvetlenül a /opt/render/.cache/puppeteer mappába települ
+# Ez a mappa perzisztens a Render.com-on, így a runtime-ban is elérhető lesz
+echo "Installing Chrome for Puppeteer..."
 PUPPETEER_CACHE_DIR=$PUPPETEER_CACHE_DIR npx puppeteer browsers install chrome
 
-# Store/pull Puppeteer cache with build cache
-if [[ ! -d $PUPPETEER_CACHE_DIR ]]; then
-  echo "...Copying Puppeteer Cache from Build Cache"
-  # Copying from the actual path where Puppeteer stores its Chrome binary
-  cp -R /opt/render/project/src/.cache/puppeteer/chrome/ $PUPPETEER_CACHE_DIR
-else
-  echo "...Storing Puppeteer Cache in Build Cache"
-  cp -R $PUPPETEER_CACHE_DIR /opt/render/project/src/.cache/puppeteer/chrome/
-fi
+echo "Chrome installation completed. Cache location: $PUPPETEER_CACHE_DIR"
 
