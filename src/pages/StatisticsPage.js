@@ -25,7 +25,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, subWeeks, subMonths, subQuarters } from 'date-fns';
 
-const API_URL = 'https://redluxcrm-7bbed8528713.herokuapp.com/api';
+import API_URL from '../config/api';
 
 function StatisticsPage() {
   const [statistics, setStatistics] = useState(null);

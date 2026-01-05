@@ -33,7 +33,7 @@ import QuotePDF from '../components/QuotePDF';
 import { getColorSurcharge, availableColors } from '../data/productData';
 import { FormControlLabel, Checkbox } from '@mui/material';
 
-const API_URL = 'https://redluxcrm-7bbed8528713.herokuapp.com/api';
+import API_URL from '../config/api';
 
 function CreateQuotePage() {
   const { id } = useParams();

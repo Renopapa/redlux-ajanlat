@@ -29,7 +29,7 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const API_URL = 'https://redluxcrm-7bbed8528713.herokuapp.com/api';
+import API_URL from '../config/api';
 
 const defaultColors = [
   { name: "Fehér", surcharge: 0 },

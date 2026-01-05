@@ -36,7 +36,7 @@ import {
   Line
 } from 'recharts';
 
-const API_URL = 'https://redluxcrm-7bbed8528713.herokuapp.com/api';
+import API_URL from '../config/api';
 
 const expenseLabels = {
   materials: 'Anyagköltség',
