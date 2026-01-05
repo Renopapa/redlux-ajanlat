@@ -39,8 +39,9 @@
     "client": "react-scripts start",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "test-db": "node backend/test-mongodb-connection.js",
-"heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --force && npm run build && npx puppeteer browsers install chrome --path ./node_modules/puppeteer/.local-browser"
-},
+    "postinstall": "npx puppeteer browsers install chrome || true",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --force && npm run build && npx puppeteer browsers install chrome"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
