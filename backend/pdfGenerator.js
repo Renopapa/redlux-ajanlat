@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 const Handlebars = require('handlebars');
 const fs = require('fs').promises;
+const fsSync = require('fs');
 const path = require('path');
 
 // Handlebars helper-ek regisztrálása
@@ -74,17 +75,41 @@ const generatePDF = async (quoteData) => {
       validUntil: new Date(Date.now() + 7*24*60*60*1000).toLocaleDateString('hu-HU')
     });
 
+    // Chrome executable path meghatározása
+    // Render.com-on vagy használjuk a környezeti változót, vagy automatikusan keressük meg
+    let executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
     
-const browser = await puppeteer.launch({
-  headless: true,
-  executablePath: puppeteer.executablePath(),  // <- biztosan az installált Chrome-ot használja
-  args: [
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-    '--disable-dev-shm-usage',
-    '--disable-gpu'
-  ]
-});
+    // Ha nincs környezeti változó, próbáljuk meg a Puppeteer default útvonalát
+    if (!executablePath) {
+      try {
+        executablePath = puppeteer.executablePath();
+        // Ellenőrizzük, hogy létezik-e a fájl
+        if (!fsSync.existsSync(executablePath)) {
+          executablePath = undefined; // Ha nem létezik, hagyjuk, hogy automatikusan keresse
+        }
+      } catch (e) {
+        executablePath = undefined; // Ha hiba van, hagyjuk, hogy automatikusan keresse
+      }
+    }
+    
+    const launchOptions = {
+      headless: true,
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--disable-software-rasterizer',
+        '--disable-extensions'
+      ]
+    };
+    
+    // Csak akkor adjuk hozzá az executablePath-ot, ha van értéke
+    if (executablePath) {
+      launchOptions.executablePath = executablePath;
+    }
+    
+    const browser = await puppeteer.launch(launchOptions);
 
     
     const page = await browser.newPage();

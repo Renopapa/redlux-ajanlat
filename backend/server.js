@@ -5,6 +5,8 @@ const cors = require('cors');
 const path = require('path');
 const { generatePDF } = require('./pdfGenerator');
 
+// Mongoose deprecation warning javítása
+mongoose.set('strictQuery', false);
 
 const app = express();
 

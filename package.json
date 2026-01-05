@@ -30,14 +30,15 @@
     "recharts": "^2.12.7",
     "web-vitals": "^2.1.4"
   },
-"scripts": {
-  "start": "node backend/server.js",
-  "build": "react-scripts build",
-  "test": "react-scripts test",
-  "eject": "react-scripts eject",
-  "server": "node backend/server.js",
-  "client": "react-scripts start",
-  "dev": "concurrently \"npm run server\" \"npm run client\"",
+  "scripts": {
+    "start": "node backend/server.js",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "server": "node backend/server.js",
+    "client": "react-scripts start",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "test-db": "node backend/test-mongodb-connection.js",
 "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --force && npm run build && npx puppeteer browsers install chrome --path ./node_modules/puppeteer/.local-browser"
 },
   "browserslist": {

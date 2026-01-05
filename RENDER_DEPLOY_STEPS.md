@@ -33,14 +33,18 @@ Region: Frankfurt (EU) vagy közel
 Branch: main
 Root Directory: (hagyd ÜRESEN)
 Runtime: Node
-Build Command: npm install && npm run build
+Build Command: npm install --force && npm run build && npx puppeteer browsers install chrome
 Start Command: npm start
 Instance Type: Free
 ```
 
 **Fontos:** 
 - A **Root Directory**-t hagyd üresen!
-- A **Build Command** és **Start Command** pontosan így legyen
+- A **Build Command** tartalmazza:
+  - `npm install --force` - függőségek telepítése
+  - `npm run build` - React build
+  - `npx puppeteer browsers install chrome` - Puppeteer Chrome telepítés
+- A **Start Command**: `npm start`
 
 ### 4. Environment Variables (KRITIKUS!)
 
