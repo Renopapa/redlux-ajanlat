@@ -2,17 +2,20 @@
 # exit on error
 set -o errexit
 
-# Install dependencies
-npm install
+# Set Puppeteer cache directory to project directory (persistent on Render)
+export PUPPETEER_CACHE_DIR=/opt/render/project/.cache/puppeteer
+mkdir -p $PUPPETEER_CACHE_DIR
 
-# Uncomment this line if you need to build your project
+# Install dependencies
+npm ci
+
+# Build the project
 npm run build
 
-# Install Puppeteer and download Chrome
-# Ne állítsuk be a PUPPETEER_CACHE_DIR-t, így a Chrome a node_modules/puppeteer/.local-chromium mappába települ
-# Ez a mappa perzisztens a Render.com-on, mert a node_modules része a build-nek
+# Install Puppeteer Chrome
+# The PUPPETEER_CACHE_DIR is set above, so Chrome will be installed there
 echo "Installing Chrome for Puppeteer..."
-npx puppeteer browsers install chrome
+PUPPETEER_CACHE_DIR=$PUPPETEER_CACHE_DIR npx puppeteer browsers install chrome
 
-echo "Chrome installation completed. Chrome is in node_modules/puppeteer/.local-chromium"
+echo "Chrome installation completed. Cache location: $PUPPETEER_CACHE_DIR"
 
