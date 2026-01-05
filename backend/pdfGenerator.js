@@ -124,6 +124,7 @@ const generatePDF = async (quoteData) => {
                     fsSync.accessSync(fullPath, fsSync.constants.F_OK);
                     return fullPath;
                   } catch (e) {
+                    // Ha nem executable, folytatjuk a következő fájllal
                     continue;
                   }
                 }
@@ -142,8 +143,8 @@ const generatePDF = async (quoteData) => {
                 }
               }
             } catch (e) {
-              // Ha nincs jogosultság olvasni, folytatjuk
-              continue;
+              // Ha nincs jogosultság olvasni, vagy más hiba van, visszatérünk null-lal
+              return null;
             }
             return null;
           };
