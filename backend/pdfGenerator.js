@@ -4,8 +4,10 @@ const fs = require('fs').promises;
 const fsSync = require('fs');
 const path = require('path');
 
-// Puppeteer cache directory beállítása Render.com-on
-const cacheDir = process.env.PUPPETEER_CACHE_DIR || (process.env.RENDER ? '/opt/render/.cache/puppeteer' : undefined);
+// Puppeteer cache directory beállítása
+// Ha nincs megadva PUPPETEER_CACHE_DIR, a Puppeteer a node_modules/puppeteer/.local-chromium mappát használja
+// Ez a mappa perzisztens a Render.com-on, mert a node_modules része a build-nek
+const cacheDir = process.env.PUPPETEER_CACHE_DIR;
 if (cacheDir) {
   process.env.PUPPETEER_CACHE_DIR = cacheDir;
 }
@@ -84,7 +86,30 @@ const generatePDF = async (quoteData) => {
     // Chrome executable path meghatározása
     let executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
     
-    // Ha nincs környezeti változó, próbáljuk meg a Puppeteer default útvonalát
+    // Először próbáljuk meg a node_modules-ben lévőt (ez a legbiztosabb, mert perzisztens)
+    if (!executablePath) {
+      const nodeModulesChrome = path.join(__dirname, '../node_modules/puppeteer/.local-chromium');
+      if (fsSync.existsSync(nodeModulesChrome)) {
+        try {
+          const chromiumDirs = fsSync.readdirSync(nodeModulesChrome, { withFileTypes: true })
+            .filter(dirent => dirent.isDirectory())
+            .map(dirent => dirent.name);
+          
+          for (const chromiumDir of chromiumDirs) {
+            const chromePath = path.join(nodeModulesChrome, chromiumDir, 'chrome-linux64', 'chrome');
+            if (fsSync.existsSync(chromePath)) {
+              console.log(`Found Chrome in node_modules at: ${chromePath}`);
+              executablePath = chromePath;
+              break;
+            }
+          }
+        } catch (e) {
+          console.log(`Error reading node_modules chromium directory: ${e.message}`);
+        }
+      }
+    }
+    
+    // Ha nincs környezeti változó és node_modules-ben sem található, próbáljuk meg a Puppeteer default útvonalát
     if (!executablePath) {
       try {
         executablePath = puppeteer.executablePath();
@@ -105,54 +130,92 @@ const generatePDF = async (quoteData) => {
     // A render-build.sh script a Chrome-ot a /opt/render/.cache/puppeteer/chrome/ mappába telepíti
     if (!executablePath && cacheDir) {
       try {
-        // Keresünk a cache directory-ben - a blog cikk szerint a chrome/ mappában van
-        const chromeCacheDir = path.join(cacheDir, 'chrome');
-        if (fsSync.existsSync(chromeCacheDir)) {
-          const findChromeInDir = (dir, depth = 0) => {
-            if (depth > 5) return null; // Max 5 szint mélység
-            if (!fsSync.existsSync(dir)) return null;
+        console.log(`Searching for Chrome in cache directory: ${cacheDir}`);
+        console.log(`Cache directory exists: ${fsSync.existsSync(cacheDir)}`);
+        
+        // Ellenőrizzük, hogy a cache directory létezik-e
+        if (!fsSync.existsSync(cacheDir)) {
+          console.log(`Cache directory does not exist, creating: ${cacheDir}`);
+          fsSync.mkdirSync(cacheDir, { recursive: true });
+        }
+        
+        // Először próbáljuk meg a közvetlen útvonalat, amit a Puppeteer ad vissza
+        // De dinamikusan keressük a verziót, ne fix verzióval
+        const chromeVersionsDir = path.join(cacheDir, 'chrome');
+        if (fsSync.existsSync(chromeVersionsDir)) {
+          try {
+            // Keresünk minden verzió mappában
+            const versionDirs = fsSync.readdirSync(chromeVersionsDir, { withFileTypes: true })
+              .filter(dirent => dirent.isDirectory())
+              .map(dirent => dirent.name);
             
-            try {
-              const entries = fsSync.readdirSync(dir, { withFileTypes: true });
-              for (const entry of entries) {
-                const fullPath = path.join(dir, entry.name);
-                
-                // Ha találunk egy 'chrome' fájlt, az lehet a Chrome executable
-                if (entry.isFile() && entry.name === 'chrome') {
-                  // Ellenőrizzük, hogy executable-e
-                  try {
-                    fsSync.accessSync(fullPath, fsSync.constants.F_OK);
-                    return fullPath;
-                  } catch (e) {
-                    // Ha nem executable, folytatjuk a következő fájllal
-                    continue;
-                  }
-                }
-                
-                // Ha mappa, keresünk benne
-                if (entry.isDirectory()) {
-                  // Próbáljuk meg a chrome-linux64/chrome útvonalat
-                  const chromePath = path.join(fullPath, 'chrome-linux64', 'chrome');
-                  if (fsSync.existsSync(chromePath)) {
-                    return chromePath;
+            for (const versionDir of versionDirs) {
+              const chromePath = path.join(chromeVersionsDir, versionDir, 'chrome-linux64', 'chrome');
+              if (fsSync.existsSync(chromePath)) {
+                console.log(`Found Chrome at: ${chromePath}`);
+                executablePath = chromePath;
+                break;
+              }
+            }
+          } catch (e) {
+            console.log(`Error reading chrome versions directory: ${e.message}`);
+          }
+        }
+        
+        if (!executablePath) {
+          // Ha nem található, keresünk a cache directory-ben
+          const chromeCacheDir = path.join(cacheDir, 'chrome');
+          if (fsSync.existsSync(chromeCacheDir)) {
+            console.log(`Searching in chrome cache directory: ${chromeCacheDir}`);
+            
+            const findChromeInDir = (dir, depth = 0) => {
+              if (depth > 5) return null; // Max 5 szint mélység
+              if (!fsSync.existsSync(dir)) return null;
+              
+              try {
+                const entries = fsSync.readdirSync(dir, { withFileTypes: true });
+                for (const entry of entries) {
+                  const fullPath = path.join(dir, entry.name);
+                  
+                  // Ha találunk egy 'chrome' fájlt, az lehet a Chrome executable
+                  if (entry.isFile() && entry.name === 'chrome') {
+                    // Ellenőrizzük, hogy létezik-e
+                    if (fsSync.existsSync(fullPath)) {
+                      console.log(`Found Chrome file at: ${fullPath}`);
+                      return fullPath;
+                    }
                   }
                   
-                  // Rekurzívan keresünk
-                  const subPath = findChromeInDir(fullPath, depth + 1);
-                  if (subPath) return subPath;
+                  // Ha mappa, keresünk benne
+                  if (entry.isDirectory()) {
+                    // Próbáljuk meg a chrome-linux64/chrome útvonalat
+                    const chromePath = path.join(fullPath, 'chrome-linux64', 'chrome');
+                    if (fsSync.existsSync(chromePath)) {
+                      console.log(`Found Chrome at: ${chromePath}`);
+                      return chromePath;
+                    }
+                    
+                    // Rekurzívan keresünk
+                    const subPath = findChromeInDir(fullPath, depth + 1);
+                    if (subPath) return subPath;
+                  }
                 }
+              } catch (e) {
+                console.log(`Error reading directory ${dir}:`, e.message);
+                return null;
               }
-            } catch (e) {
-              // Ha nincs jogosultság olvasni, vagy más hiba van, visszatérünk null-lal
               return null;
+            };
+            
+            const foundPath = findChromeInDir(chromeCacheDir);
+            if (foundPath) {
+              console.log(`Found Chrome in cache directory at: ${foundPath}`);
+              executablePath = foundPath;
+            } else {
+              console.log(`Chrome not found in cache directory: ${chromeCacheDir}`);
             }
-            return null;
-          };
-          
-          const foundPath = findChromeInDir(chromeCacheDir);
-          if (foundPath) {
-            console.log(`Found Chrome in cache directory at: ${foundPath}`);
-            executablePath = foundPath;
+          } else {
+            console.log(`Chrome cache directory does not exist: ${chromeCacheDir}`);
           }
         }
       } catch (e) {
@@ -180,25 +243,6 @@ const generatePDF = async (quoteData) => {
       }
     }
     
-    // Ha még mindig nincs Chrome, próbáljuk meg a node_modules-ben lévőt
-    if (!executablePath) {
-      const nodeModulesChrome = path.join(__dirname, '../node_modules/puppeteer/.local-chromium');
-      if (fsSync.existsSync(nodeModulesChrome)) {
-        // Keresünk a chromium mappában
-        const chromiumDirs = fsSync.readdirSync(nodeModulesChrome, { withFileTypes: true })
-          .filter(dirent => dirent.isDirectory())
-          .map(dirent => dirent.name);
-        
-        for (const chromiumDir of chromiumDirs) {
-          const chromePath = path.join(nodeModulesChrome, chromiumDir, 'chrome-linux64', 'chrome');
-          if (fsSync.existsSync(chromePath)) {
-            console.log(`Found Chrome in node_modules at: ${chromePath}`);
-            executablePath = chromePath;
-            break;
-          }
-        }
-      }
-    }
     
     const launchOptions = {
       headless: true,
