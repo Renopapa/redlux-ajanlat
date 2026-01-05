@@ -26,6 +26,11 @@ yarn-error.log*
 /backend/node_modules
 /backend/.env
 
+# Scripts with sensitive data
+check-mongodb.js
+*.env
+.env
+
 # IDE/Editor folders
 .vscode
 .idea

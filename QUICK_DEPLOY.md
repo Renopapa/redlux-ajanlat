@@ -66,10 +66,11 @@ git push -u origin main
    Kattints "Advanced" → "Add Environment Variable":
    
    ```
-   MONGODB_URI = mongodb+srv://redluxCRM:redlux123@redluxcrm.evoxfzk.mongodb.net/redluxDB?retryWrites=true&w=majority&appName=RedLuxCRM
+   MONGODB_URI = mongodb+srv://redluxCRM:****@redluxcrm.evoxfzk.mongodb.net/redluxDB?retryWrites=true&w=majority&appName=RedLuxCRM
    NODE_ENV = production
    PORT = 10000
    ```
+   **Fontos:** Cseréld le a `****`-ot a valódi MongoDB jelszóra!
 
 5. **Deploy**:
    - Kattints "Create Web Service"
