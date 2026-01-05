@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Professzionális Árajánlat - {{clientName}}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #1a1a1a;
+      line-height: 1.6;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    
+    /* ==================== FEDŐLAP ==================== */
+    .cover-page {
+      height: 100vh;
+      background: linear-gradient(135deg, #001F3F 0%, #0066FF 50%, #00A8FF 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      page-break-after: always;
+    }
+    
+    .cover-page::before {
+      content: '';
+      position: absolute;
+      width: 150%;
+      height: 150%;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
+      animation: float 20s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(30px, 30px) rotate(5deg); }
+    }
+    
+    .cover-content {
+      z-index: 10;
+      max-width: 800px;
+      padding: 40px;
+    }
+    
+    .cover-logo {
+      width: 200px;
+      margin-bottom: 50px;
+      filter: brightness(0) invert(1);
+    }
+    
+    .cover-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(10px);
+      padding: 8px 24px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 30px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    
+    .cover-title {
+      font-size: 72px;
+      font-weight: 800;
+      letter-spacing: -2px;
+      margin-bottom: 20px;
+      text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      line-height: 1.1;
+    }
+    
+    .cover-subtitle {
+      font-size: 24px;
+      font-weight: 300;
+      margin-bottom: 50px;
+      opacity: 0.95;
+    }
+    
+    .cover-client-box {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 30px 50px;
+      margin-top: 40px;
+    }
+    
+    .cover-client-label {
+      font-size: 14px;
+      opacity: 0.8;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .cover-client-name {
+      font-size: 42px;
+      font-weight: 700;
+    }
+    
+    .cover-date {
+      position: absolute;
+      bottom: 40px;
+      font-size: 16px;
+      opacity: 0.7;
+    }
+    
+    /* ==================== KÖZÖS STÍLUSOK ==================== */
+    .page {
+      min-height: 100vh;
+      padding: 60px 80px;
+      page-break-after: always;
+      background: white;
+    }
+    
+    .page-header {
+      margin-bottom: 50px;
+    }
+    
+    .page-title {
+      font-size: 48px;
+      font-weight: 800;
+      color: #0066FF;
+      margin-bottom: 15px;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .page-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 60%;
+      height: 5px;
+      background: linear-gradient(90deg, #0066FF 0%, transparent 100%);
+      border-radius: 3px;
+    }
+    
+    .page-subtitle {
+      font-size: 20px;
+      color: #666;
+      font-weight: 400;
+      margin-top: 20px;
+    }
+    
+    /* ==================== CÉGBEMUTATÓ OLDAL ==================== */
+    .about-section {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 50px;
+    }
+    
+    .about-text {
+      flex: 1;
+    }
+    
+    .about-text p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #444;
+      margin-bottom: 20px;
+    }
+    
+    .about-image {
+      flex: 1;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+    
+    .about-image img {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+      margin-top: 60px;
+    }
+    
+    .stat-card {
+      text-align: center;
+      padding: 30px;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 15px;
+      border: 2px solid #e0e0e0;
+    }
+    
+    .stat-number {
+      font-size: 48px;
+      font-weight: 800;
+      color: #0066FF;
+      margin-bottom: 10px;
+    }
+    
+    .stat-label {
+      font-size: 14px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    /* ==================== ELŐNYÖK OLDAL ==================== */
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+      margin-top: 40px;
+    }
+    
+    .benefit-card {
+      background: white;
+      border: 2px solid #e9ecef;
+      border-radius: 20px;
+      padding: 40px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .benefit-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, #0066FF 0%, #00A8FF 100%);
+    }
+    
+    .benefit-icon {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #0066FF 0%, #00A8FF 100%);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 25px;
+      font-size: 36px;
+    }
+    
+    .benefit-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 15px;
+    }
+    
+    .benefit-description {
+      font-size: 15px;
+      color: #666;
+      line-height: 1.7;
+    }
+    
+    /* ==================== TERMÉKEK RÉSZLETEZŐ ==================== */
+    .product-showcase {
+      margin-bottom: 50px;
+      background: #f8f9fa;
+      border-radius: 25px;
+      overflow: hidden;
+      border: 2px solid #e9ecef;
+    }
+    
+    .product-header {
+      background: linear-gradient(135deg, #0066FF 0%, #0052CC 100%);
+      color: white;
+      padding: 30px 40px;
+    }
+    
+    .product-header h3 {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+    
+    .product-header p {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+    
+    .product-content {
+      display: flex;
+      padding: 40px;
+      gap: 40px;
+    }
+    
+    .product-image {
+      flex: 1;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    
+    .product-image img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+    }
+    
+    .product-details {
+      flex: 1;
+    }
+    
+    .product-features {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .product-features li {
+      padding: 12px 0;
+      border-bottom: 1px solid #e0e0e0;
+      font-size: 15px;
+      color: #444;
+      position: relative;
+      padding-left: 30px;
+    }
+    
+    .product-features li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #0066FF;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    
+    /* ==================== TELEPÍTÉSI FOLYAMAT ==================== */
+    .process-timeline {
+      position: relative;
+      margin-top: 60px;
+    }
+    
+    .process-step {
+      display: flex;
+      gap: 40px;
+      margin-bottom: 60px;
+      position: relative;
+    }
+    
+    .process-step::after {
+      content: '';
+      position: absolute;
+      left: 40px;
+      top: 100px;
+      width: 3px;
+      height: calc(100% + 60px);
+      background: linear-gradient(180deg, #0066FF 0%, #e0e0e0 100%);
+    }
+    
+    .process-step:last-child::after {
+      display: none;
+    }
+    
+    .step-number {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #0066FF 0%, #00A8FF 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      font-weight: 800;
+      color: white;
+      flex-shrink: 0;
+      box-shadow: 0 10px 30px rgba(0,102,255,0.3);
+      z-index: 1;
+    }
+    
+    .step-content {
+      flex: 1;
+      background: white;
+      border: 2px solid #e9ecef;
+      border-radius: 20px;
+      padding: 30px;
+    }
+    
+    .step-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 15px;
+    }
+    
+    .step-description {
+      font-size: 15px;
+      color: #666;
+      line-height: 1.7;
+    }
+    
+    /* ==================== MŰSZAKI SPEC & GARANCIA ==================== */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+      margin-top: 40px;
+    }
+    
+    .spec-box {
+      background: linear-gradient(135deg, #f8f9fa 0%, white 100%);
+      border: 2px solid #e9ecef;
+      border-radius: 20px;
+      padding: 40px;
+    }
+    
+    .spec-box h3 {
+      font-size: 24px;
+      color: #0066FF;
+      margin-bottom: 25px;
+      font-weight: 700;
+    }
+    
+    .spec-list {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .spec-list li {
+      padding: 15px 0;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      font-size: 15px;
+    }
+    
+    .spec-list li:last-child {
+      border-bottom: none;
+    }
+    
+    .spec-label {
+      color: #666;
+      font-weight: 500;
+    }
+    
+    .spec-value {
+      color: #1a1a1a;
+      font-weight: 600;
+    }
+    
+    .warranty-box {
+      background: linear-gradient(135deg, #FFF9E6 0%, #FFF3CC 100%);
+      border: 3px solid #FFD700;
+      border-radius: 20px;
+      padding: 40px;
+      margin-top: 40px;
+      text-align: center;
+    }
+    
+    .warranty-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+    
+    .warranty-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #CC8400;
+      margin-bottom: 20px;
+    }
+    
+    .warranty-text {
+      font-size: 16px;
+      color: #666;
+      line-height: 1.8;
+    }
+    
+    /* ==================== REFERENCIÁK ==================== */
+    .references-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+      margin-top: 40px;
+    }
+    
+    .reference-card {
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      background: white;
+    }
+    
+    .reference-image {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+    }
+    
+    .reference-content {
+      padding: 30px;
+    }
+    
+    .reference-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 10px;
+    }
+    
+    .reference-description {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+    }
+    
+    /* ==================== ÁRAZÁS OLDAL ==================== */
+    .pricing-intro {
+      background: linear-gradient(135deg, #E8F4FF 0%, #C5E3FF 100%);
+      border-left: 5px solid #0066FF;
+      border-radius: 15px;
+      padding: 30px;
+      margin-bottom: 40px;
+    }
+    
+    .pricing-intro h3 {
+      color: #0066FF;
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+    
+    .pricing-intro ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .pricing-intro li {
+      padding: 8px 0;
+      padding-left: 25px;
+      position: relative;
+      color: #444;
+      font-size: 14px;
+    }
+    
+    .pricing-intro li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: #0066FF;
+      font-weight: bold;
+    }
+    
+    .pricing-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 40px 0;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+      border-radius: 15px;
+      overflow: hidden;
+    }
+    
+    .pricing-table thead {
+      background: linear-gradient(135deg, #0066FF 0%, #0052CC 100%);
+      color: white;
+    }
+    
+    .pricing-table th {
+      padding: 20px 20px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .pricing-table td {
+      padding: 18px 20px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 15px;
+      background: white;
+    }
+    
+    .pricing-table tbody tr:hover {
+      background: #f8f9fa;
+    }
+    
+    .pricing-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .price-original {
+      color: #dc3545;
+      text-decoration: line-through;
+      font-size: 13px;
+      display: block;
+      margin-bottom: 4px;
+    }
+    
+    .price-final {
+      color: #0066FF;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    
+    .summary-box {
+      background: linear-gradient(135deg, #001F3F 0%, #0066FF 100%);
+      color: white;
+      border-radius: 20px;
+      padding: 40px;
+      margin-top: 40px;
+    }
+    
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      font-size: 18px;
+    }
+    
+    .summary-row:last-child {
+      border-bottom: none;
+      padding-top: 25px;
+      margin-top: 15px;
+      border-top: 3px solid rgba(255,255,255,0.3);
+    }
+    
+    .summary-label {
+      font-weight: 400;
+    }
+    
+    .summary-value {
+      font-weight: 700;
+    }
+    
+    .total-row {
+      font-size: 36px !important;
+      font-weight: 800 !important;
+    }
+    
+    .discount-highlight {
+      color: #FFD700;
+    }
+    
+    /* ==================== KÖVETKEZŐ LÉPÉSEK ==================== */
+    .cta-section {
+      background: linear-gradient(135deg, #0066FF 0%, #00A8FF 100%);
+      color: white;
+      border-radius: 25px;
+      padding: 60px;
+      text-align: center;
+      margin: 60px 0;
+    }
+    
+    .cta-title {
+      font-size: 42px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+    
+    .cta-text {
+      font-size: 20px;
+      margin-bottom: 40px;
+      opacity: 0.95;
+    }
+    
+    .cta-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin-top: 50px;
+    }
+    
+    .cta-step {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 30px;
+    }
+    
+    .cta-step-number {
+      font-size: 48px;
+      font-weight: 800;
+      margin-bottom: 15px;
+      opacity: 0.8;
+    }
+    
+    .cta-step-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    
+    .cta-step-desc {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+      margin-top: 40px;
+    }
+    
+    .contact-card {
+      background: white;
+      border: 2px solid #e9ecef;
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+    }
+    
+    .contact-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    
+    .contact-label {
+      font-size: 14px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    
+    .contact-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #0066FF;
+    }
+    
+    /* ==================== FOOTER ==================== */
+    .footer {
+      background: #1a1a1a;
+      color: white;
+      padding: 40px 80px;
+      text-align: center;
+    }
+    
+    .footer-logo {
+      width: 150px;
+      margin-bottom: 20px;
+      filter: brightness(0) invert(1);
+    }
+    
+    .footer-text {
+      font-size: 14px;
+      opacity: 0.7;
+      line-height: 1.8;
+    }
+    
+    /* ==================== PRINT ==================== */
+    @page {
+      margin: 0;
+      size: A4;
+    }
+    
+    @media print {
+      body { -webkit-print-color-adjust: exact; }
+      .page-break { page-break-after: always; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== 1. FEDŐLAP ==================== -->
+  <div class="cover-page">
+    <div class="cover-content">
+      <div class="cover-badge">Professzionális Árajánlat</div>
+      <h1 class="cover-title">Minőség<br/>Amit Látni Fog</h1>
+      <p class="cover-subtitle">Prémium redőny és szúnyogháló megoldások az Ön otthonába</p>
+      
+      <div class="cover-client-box">
+        <div class="cover-client-label">Készítve</div>
+        <div class="cover-client-name">{{clientName}}</div>
+      </div>
+    </div>
+    <div class="cover-date">{{date}}</div>
+  </div>
+
+  <!-- ==================== 2. CÉGBEMUTATÓ ==================== -->
+  <div class="page">
+    <div class="page-header">
+      <h2 class="page-title">Miért a RedLux?</h2>
+      <p class="page-subtitle">15 év tapasztalat, több mint 10.000 elégedett ügyfél</p>
+    </div>
+    
+    <div class="about-section">
+      <div class="about-text">
+        <p><strong>A RedLux Redőny Kft.</strong> 2008 óta szolgálja ki ügyfeleit a legmagasabb minőségű redőny és szúnyogháló megoldásokkal. Cégünk az évek során Budapest és környékének megbízható partnere lett az árnyékolástechnika terén.</p>
+        
+        <p>Csapatunk tapasztalt szakemberekből áll, akik nem csak telepítenek, hanem tanácsot is adnak a legmegfelelőbb megoldások kiválasztásában. Minden projektet egyedi igényekre szabva kezelünk.</p>
+        
+        <p>Partnereink között a vezető európai gyártók találhatók, így garantálhatjuk termékeink tartósságát és megbízhatóságát. Minden általunk telepített rendszer hosszú távú védelmet és kényelmet biztosít otthonának.</p>
+      </div>
+      
+      <div class="about-image">
+        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800" alt="Modern lakás">
+      </div>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">15+</div>
+        <div class="stat-label">Év Tapasztalat</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">10K+</div>
+        <div class="stat-label">Elégedett Ügyfél</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">5 év</div>
+        <div class="stat-label">Garancia Motorokra</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">4-6</div>
+        <div class="stat-label">Hét Gyártási Idő</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 3. ELŐNYÖK ==================== -->
+  <div class="page">
+    <div class="page-header">
+      <h2 class="page-title">Miért Válasszon Minket?</h2>
+      <p class="page-subtitle">8 ok, amiért ügyfeleink minket választanak</p>
+    </div>
+    
+    <div class="benefits-grid">
+      <div class="benefit-card">
+        <div class="benefit-icon">🏆</div>
+        <h3 class="benefit-title">Prémium Minőség</h3>
+        <p class="benefit-description">Csak a legmagasabb minőségű európai alapanyagokat használjuk, amelyek évtizedekig tartanak.</p>
+      </div>
+      
+      <div class="benefit-card">
+        <div class="benefit-icon">⚡</div>
+        <h3 class="benefit-title">Gyors Kivitelezés</h3>
+        <p class="benefit-description">4-6 hét gyártási idő után professzionális, pontos telepítés 1 napon belül.</p>
+      </div>
+      
+      <div class="benefit-card">
+        <div class="benefit-icon">💰</div>
+        <h3 class="benefit-title">Átlátható Árazás</h3>
+        <p class="benefit-description">Nincs rejtett költség. Amit az árajánlatban lát, azt fizeti - kiszállással és munkadíjjal együtt.</p>
+      </div>
+      
+      <div class="benefit-card">
+        <div class="benefit-icon">🛡️</div>
+        <h3 class="benefit-title">5 Év Garancia</h3>
+        <p class="benefit-description">Motoros rendszereinkre 5 év garanciát vállalunk, redőnyökre és szúnyoghálókra 1 évet.</p>
+      </div>
+      
+      <div class="benefit-card">
+        <div class="benefit-icon">👨‍🔧</div>
+        <h3 class="benefit-title">Szakértő Csapat</h3>
+        <p class="benefit-description">15+ év tapasztalattal rendelkező szerelőink gondoskodnak a tökéletes kivitelezésről.</p>
+      </div>
+      
+      <div class="benefit-card">
+        <div class="benefit-icon">🎨</div>
+        <h3 class="benefit-title">Egyedi Megoldások</h3>
+        <p class="benefit-description">Minden terméket az Ön igényeire szabunk - méretben, színben és funkcióban.</p>
+      </div>
+      
+      <div class="benefit-card">
+        <div class="benefit-icon">📞</div>
+        <h3 class="benefit-title">Ügyfélszolgálat</h3>
+        <p class="benefit-description">Telepítés után is számíthat ránk - telefonon és emailen elérhetőek vagyunk.</p>
+      </div>
+      
+      <div class="benefit-card">
+        <div class="benefit-icon">🔒</div>
+        <h3 class="benefit-title">Biztonság</h3>
+        <p class="benefit-description">Termékeink megfelelnek az EU biztonsági szabványainak és CE minősítéssel rendelkeznek.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 4. TERMÉK BEMUTATÓ ==================== -->
+  <div class="page">
+    <div class="page-header">
+      <h2 class="page-title">Termékeink</h2>
+      <p class="page-subtitle">Prémium minőségű megoldások minden igényre</p>
+    </div>
+    
+    <div class="product-showcase">
+      <div class="product-header">
+        <h3>Alumínium Redőnyök</h3>
+        <p>Tartós, strapabíró védelmet nyújt otthonának</p>
+      </div>
+      <div class="product-content">
+        <div class="product-image">
+          <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800" alt="Redőny">
+        </div>
+        <div class="product-details">
+          <ul class="product-features">
+            <li><strong>Tartósság:</strong> 40mm vastag, kétfalú alumínium lamella</li>
+            <li><strong>Szigetelés:</strong> Kiváló hő- és hangszigetelés</li>
+            <li><strong>Működtetés:</strong> Kézi vagy motoros kivitelben</li>
+            <li><strong>Színválaszték:</strong> 8+ RAL szín közül választhat</li>
+            <li><strong>Biztonság:</strong> Betörés elleni védelem</li>
+            <li><strong>Karbantartás:</strong> Minimális, évente 1x tisztítás</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="product-showcase">
+      <div class="product-header">
+        <h3>Fix Alumínium Szúnyoghálók</h3>
+        <p>Láthatatlan védelem rovarok ellen</p>
+      </div>
+      <div class="product-content">
+        <div class="product-image">
+          <img src="https://images.unsplash.com/photo-1631889993959-41b4e9c6e3c5?w=800" alt="Szúnyogháló">
+        </div>
+        <div class="product-details">
+          <ul class="product-features">
+            <li><strong>Anyag:</strong> Prémium fiberüveg szövet</li>
+            <li><strong>Keret:</strong> Por- és korróziómentes alumínium</li>
+            <li><strong>Átlátszóság:</strong> 90%-os fényáteresztés</li>
+            <li><strong>Tisztítás:</strong> Könnyen lemosható, eltávolítható</li>
+            <li><strong>Méret:</strong> Milliméterre pontos egyedi gyártás</li>
+            <li><strong>Környezetbarát:</strong> Újrahasznosítható anyagok</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 5. TELEPÍTÉSI FOLYAMAT ==================== -->
+  <div class="page">
+    <div class="page-header">
+      <h2 class="page-title">Hogyan Történik a Telepítés?</h2>
+      <p class="page-subtitle">5 egyszerű lépés az új redőnyökhöz</p>
+    </div>
+    
+    <div class="process-timeline">
+      <div class="process-step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3 class="step-title">Ingyenes Helyszíni Felmérés</h3>
+          <p class="step-description">Szakértő kollégánk ellátogat Önhöz, pontos méréseket végez és tanácsot ad a legjobb megoldásokról. Ekkor tisztázhatja kérdéseit is.</p>
+        </div>
+      </div>
+      
+      <div class="process-step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3 class="step-title">Személyre Szabott Árajánlat</h3>
+          <p class="step-description">24 órán belül elkészítjük részletes árajánlatunkat, amely tartalmazza az összes költséget (anyag, munkadíj, kiszállás). Nincs rejtett költség!</p>
+        </div>
+      </div>
+      
+      <div class="process-step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3 class="step-title">Gyártás Megkezdése</h3>
+          <p class="step-description">Árajánlat elfogadása és 50% előleg befizetése után azonnal megkezdjük a gyártást. Folyamatosan tájékoztatjuk a készültségről.</p>
+        </div>
+      </div>
+      
+      <div class="process-step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h3 class="step-title">Professzionális Telepítés</h3>
+          <p class="step-description">4-6 hét után tapasztalt szerelőink telepítik a rendszert. A munka általában 3-6 órát vesz igénybe, tisztán, pontosan.</p>
+        </div>
+      </div>
+      
+      <div class="process-step">
+        <div class="step-number">5</div>
+        <div class="step-content">
+          <h3 class="step-title">Átadás és Garanciális Üzembe Helyezés</h3>
+          <p class="step-description">Bemutatjuk a használatot, átadjuk a garanciális dokumentációt. Hátralévő 50% kifizetése után élvezheti új redőnyeit!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 6. MŰSZAKI SPEC & GARANCIA ==================== -->
+  <div class="page">
+    <div class="page-header">
+      <h2 class="page-title">Műszaki Részletek</h2>
+      <p class="page-subtitle">Minden, amit tudnia kell termékeinkről</p>
+    </div>
+    
+    <div class="specs-grid">
+      <div class="spec-box">
+        <h3>Redőny Specifikációk</h3>
+        <ul class="spec-list">
+          <li><span class="spec-label">Lamella anyag:</span> <span class="spec-value">Alumínium</span></li>
+          <li><span class="spec-label">Lamella vastagság:</span> <span class="spec-value">40mm dupla falú</span></li>
+          <li><span class="spec-label">Vezetősín:</span> <span class="spec-value">Alumínium, por-festett</span></li>
+          <li><span class="spec-label">Motor:</span> <span class="spec-value">Somfy / Nice</span></li>
+          <li><span class="spec-label">Max méret:</span> <span class="spec-value">600cm szélesség</span></li>
+          <li><span class="spec-label">Hőszigetelés:</span> <span class="spec-value">U=1.2 W/m²K</span></li>
+        </ul>
+      </div>
+      
+      <div class="spec-box">
+        <h3>Szúnyogháló Specifikációk</h3>
+        <ul class="spec-list">
+          <li><span class="spec-label">Háló anyag:</span> <span class="spec-value">Fiberüveg szövet</span></li>
+          <li><span class="spec-label">Háló szín:</span> <span class="spec-value">Fekete/antracit</span></li>
+          <li><span class="spec-label">Keret:</span> <span class="spec-value">25mm alumínium</span></li>
+          <li><span class="spec-label">Szem méret:</span> <span class="spec-value">1.2 x 1.2 mm</span></li>
+          <li><span class="spec-label">Fényáteresztés:</span> <span class="spec-value">90%</span></li>
+          <li><span class="spec-label">Levegő áteresztés:</span> <span class="spec-value">85%</span></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="warranty-box">
+      <div class="warranty-icon">🛡️</div>
+      <h3 class="warranty-title">Garancia & Szerviz</h3>
+      <p class="warranty-text">
+        <strong>Redőnyökre és szúnyoghálókra 1 év teljes körű garancia</strong><br/>
+        <strong>Motoros meghajtásokra 5 év gyártói garancia</strong><br/><br/>
+        
+        Garanciális javítás ingyenes, 48 órán belül kiszállunk. Garancia lejárta után is kedvezményes szerviz szolgáltatást biztosítunk. 
+        Alkatrészkészlet folyamatosan raktáron, így a javítások gyorsak és hatékonyak.
+      </p>
+    </div>
+  </div>
+
+  <!-- ==================== 7. REFERENCIÁK ==================== -->
+  <div class="page">
+    <div class="page-header">
+      <h2 class="page-title">Referencia Munkáink</h2>
+      <p class="page-subtitle">Elégedett ügyfeleink projektjeiből</p>
+    </div>
+    
+    <div class="references-grid">
+      <div class="reference-card">
+        <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=800" alt="Projekt 1" class="reference-image">
+        <div class="reference-content">
+          <h3 class="reference-title">Modern Családi Ház - Budapest XII.</h3>
+          <p class="reference-description">12 db motoros alumínium redőny telepítése nagyméretű panoráma ablakokra. Vezérlés okostelefonról.</p>
+        </div>
+      </div>
+      
+      <div class="reference-card">
+        <img src="https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=800" alt="Projekt 2" class="reference-image">
+        <div class="reference-content">
+          <h3 class="reference-title">Társasház Teljes Felújítás - Budapest VI.</h3>
+          <p class="reference-description">48 lakás redőny cseréje 3 hét alatt. Koordinált munkavégzés, nulla probléma.</p>
+        </div>
+      </div>
+      
+      <div class="reference-card">
+        <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=800" alt="Projekt 3" class="reference-image">
+        <div class="reference-content">
+          <h3 class="reference-title">Luxus Penthouse - Budapest V.</h3>
+          <p class="reference-description">Premium szúnyoghálók és motoros redőnyök 360 fokos panoráma ablakokra.</p>
+        </div>
+      </div>
+      
+      <div class="reference-card">
+        <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800" alt="Projekt 4" class="reference-image">
+        <div class="reference-content">
+          <h3 class="reference-title">Kertes Ház - Budakeszi</h3>
+          <p class="reference-description">Komplex megoldás: redőnyök, szúnyoghálók és terasz árnyékolók egy projektben.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 8. ÜGYFÉL ADATOK & ÁRAZÁS ==================== -->
+  <div class="page">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 50px;">
+      <div>
+        <h3 style="color: #0066FF; font-size: 20px; margin-bottom: 15px;">RedLux Redőny Kft.</h3>
+        <p style="font-size: 14px; color: #666; line-height: 1.8;">
+          Cím: 1119. Budapest, Andor utca 21/C. fszt. 1<br/>
+          Telefon: +36 30 606 6556<br/>
+          E-mail: info@redlux.hu<br/>
+          Adószám: 32704260-2-43<br/>
+          Web: www.redlux.hu
+        </p>
+      </div>
+      
+      <div style="background: #f8f9fa; padding: 25px; border-radius: 15px; border-left: 4px solid #0066FF;">
+        <h3 style="color: #0066FF; font-size: 18px; margin-bottom: 15px;">Ügyfél Adatai</h3>
+        <p style="font-size: 14px; line-height: 1.8;">
+          <strong>{{clientName}}</strong><br/>
+          Azonosító: {{clientId}}<br/>
+          {{clientAddress}}<br/>
+          {{clientPhone}}<br/>
+          {{clientEmail}}
+        </p>
+        <p style="font-size: 13px; color: #666; margin-top: 15px;">
+          Árajánlat dátuma: {{date}}<br/>
+          Érvényesség: {{validUntil}}
+        </p>
+      </div>
+    </div>
+    
+    <h2 class="page-title">Részletes Árajánlat</h2>
+    
+    <div class="pricing-intro">
+      <h3>Fontos Tudnivalók</h3>
+      <ul>
+        <li>1,3 m² alatti termék esetén a termék ára egységáras.</li>
+        <li>A kalkuláció készítése során a méretek egy tizedes jegyig felfelé kerekítésre kerülnek.</li>
+        <li>Az árak tartalmazzák az ÁFA-t, a kiszállást és a munkadíjat.</li>
+        <li>50 000 Ft feletti megrendelés esetén 50% előleg szükséges.</li>
+        <li>Árainkat 1 hétig garantáljuk a jelenlegi gazdasági helyzetre tekintettel.</li>
+        <li><strong>Várható gyártási és telepítési idő: 4-6 hét</strong></li>
+      </ul>
+    </div>
+    
+    <table class="pricing-table">
+      <thead>
+        <tr>
+          <th style="width: 28%;">Termék megnevezés</th>
+          <th style="width: 14%;">Méret</th>
+          <th style="width: 12%;">Szín</th>
+          <th style="width: 10%; text-align: center;">Menny.</th>
+          <th style="width: 16%; text-align: right;">Egységár</th>
+          <th style="width: 20%; text-align: right;">Összesen</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each quoteItems}}
+        <tr>
+          <td><strong>{{this.product}}</strong></td>
+          <td>{{this.dimensions}}</td>
+          <td>{{this.color}}</td>
+          <td style="text-align: center;">{{this.quantity}}</td>
+          <td style="text-align: right;">
+            {{#if this.discount}}
+            <span class="price-original">{{formatNumber (divide this.totalPrice (multiply this.quantity (subtract 1 (divide this.discount 100))))}}</span>
+            {{/if}}
+            <span class="price-final">{{formatNumber (divide this.totalPrice this.quantity)}} Ft</span>
+          </td>
+          <td style="text-align: right;">
+            {{#if this.discount}}
+            <span class="price-original">{{formatNumber (divide this.totalPrice (subtract 1 (divide this.discount 100)))}}</span>
+            {{/if}}
+            <span class="price-final">{{formatNumber this.totalPrice}} Ft</span>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    
+    <div class="summary-box">
+      <div class="summary-row">
+        <div class="summary-label">Részösszeg:</div>
+        <div class="summary-value">{{formatNumber (sum quoteItems 'totalPrice')}} Ft</div>
+      </div>
+      
+      {{#if discount}}
+      <div class="summary-row discount-highlight">
+        <div class="summary-label">🎉 Kedvezmény ({{discount}}%):</div>
+        <div class="summary-value">-{{formatNumber (multiply (sum quoteItems 'totalPrice') (divide discount 100))}} Ft</div>
+      </div>
+      {{/if}}
+      
+      <div class="summary-row total-row">
+        <div class="summary-label">VÉGÖSSZEG:</div>
+        <div class="summary-value">{{formatNumber total}} Ft</div>
+      </div>
+    </div>
+    
+    {{#if notes}}
+    <div style="background: #FFF9E6; border-left: 4px solid #FFB800; padding: 25px; border-radius: 12px; margin-top: 40px;">
+      <h3 style="color: #CC8400; font-size: 18px; margin-bottom: 15px;">📝 Megjegyzések</h3>
+      <p style="font-size: 15px; color: #444; line-height: 1.7;">{{notes}}</p>
+    </div>
+    {{/if}}
+  </div>
+
+  <!-- ==================== 9. KÖVETKEZŐ LÉPÉSEK ==================== -->
+  <div class="page">
+    <div class="cta-section">
+      <h2 class="cta-title">Készen Áll a Következő Lépésre?</h2>
+      <p class="cta-text">3 egyszerű lépésben a tökéletes otthonhoz</p>
+      
+      <div class="cta-steps">
+        <div class="cta-step">
+          <div class="cta-step-number">1</div>
+          <div class="cta-step-title">Fogadja El</div>
+          <p class="cta-step-desc">Kattintson az e-mailben található "Elfogadom" gombra</p>
+        </div>
+        
+        <div class="cta-step">
+          <div class="cta-step-number">2</div>
+          <div class="cta-step-title">Fizessen Előleget</div>
+          <p class="cta-step-desc">50% előleg átutalása megrendelés véglegesítéséhez</p>
+        </div>
+        
+        <div class="cta-step">
+          <div class="cta-step-number">3</div>
+          <div class="cta-step-title">Várja a Telepítést</div>
+          <p class="cta-step-desc">4-6 hét múlva élvezze új redőnyeit!</p>
+        </div>
+      </div>
+    </div>
+    
+    <h2 class="page-title" style="margin-top: 60px;">Lépjen Kapcsolatba Velünk</h2>
+    
+    <div class="contact-grid">
+      <div class="contact-card">
+        <div class="contact-icon">📞</div>
+        <div class="contact-label">Telefonon</div>
+        <div class="contact-value">+36 30 606 6556</div>
+        <p style="font-size: 14px; color: #666; margin-top: 15px;">H-P: 8:00-17:00</p>
+      </div>
+      
+      <div class="contact-card">
+        <div class="contact-icon">📧</div>
+        <div class="contact-label">E-mailben</div>
+        <div class="contact-value">info@redlux.hu</div>
+        <p style="font-size: 14px; color: #666; margin-top: 15px;">24 órán belül válaszolunk</p>
+      </div>
+      
+      <div class="contact-card">
+        <div class="contact-icon">🏢</div>
+        <div class="contact-label">Látogasson El</div>
+        <div class="contact-value" style="font-size: 18px;">Budapest, Andor u. 21/C.</div>
+        <p style="font-size: 14px; color: #666; margin-top: 15px;">Előzetes egyeztetés szükséges</p>
+      </div>
+      
+      <div class="contact-card">
+        <div class="contact-icon">🌐</div>
+        <div class="contact-label">Weboldalunkon</div>
+        <div class="contact-value" style="font-size: 20px;">www.redlux.hu</div>
+        <p style="font-size: 14px; color: #666; margin-top: 15px;">További információk és referenciák</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <div class="footer">
+    <p class="footer-text">
+      Köszönjük, hogy a RedLux Redőny Kft-t választotta! Csapatunk mindent megtesz azért, hogy elégedett legyen választásával.<br/>
+      Ez az árajánlat {{validUntil}}-ig érvényes. Bármilyen kérdése van, állunk rendelkezésére!<br/><br/>
+      <strong>RedLux Redőny Kft.</strong> | Budapest, 2025
+    </p>
+  </div>
+
+</body>
+</html>
