@@ -102,30 +102,57 @@ const generatePDF = async (quoteData) => {
     }
     
     // Ha a Puppeteer nem találta meg, próbáljuk meg a cache directory-ben keresni
-    if (!executablePath && cacheDir && fsSync.existsSync(cacheDir)) {
+    // A render-build.sh script a Chrome-ot a /opt/render/.cache/puppeteer/chrome/ mappába telepíti
+    if (!executablePath && cacheDir) {
       try {
-        // Keresünk a cache directory-ben
-        const findChromeInDir = (dir) => {
-          if (!fsSync.existsSync(dir)) return null;
-          const entries = fsSync.readdirSync(dir, { withFileTypes: true });
-          for (const entry of entries) {
-            if (entry.isDirectory()) {
-              const chromePath = path.join(dir, entry.name, 'chrome-linux64', 'chrome');
-              if (fsSync.existsSync(chromePath)) {
-                return chromePath;
+        // Keresünk a cache directory-ben - a blog cikk szerint a chrome/ mappában van
+        const chromeCacheDir = path.join(cacheDir, 'chrome');
+        if (fsSync.existsSync(chromeCacheDir)) {
+          const findChromeInDir = (dir, depth = 0) => {
+            if (depth > 5) return null; // Max 5 szint mélység
+            if (!fsSync.existsSync(dir)) return null;
+            
+            try {
+              const entries = fsSync.readdirSync(dir, { withFileTypes: true });
+              for (const entry of entries) {
+                const fullPath = path.join(dir, entry.name);
+                
+                // Ha találunk egy 'chrome' fájlt, az lehet a Chrome executable
+                if (entry.isFile() && entry.name === 'chrome') {
+                  // Ellenőrizzük, hogy executable-e
+                  try {
+                    fsSync.accessSync(fullPath, fsSync.constants.F_OK);
+                    return fullPath;
+                  } catch (e) {
+                    continue;
+                  }
+                }
+                
+                // Ha mappa, keresünk benne
+                if (entry.isDirectory()) {
+                  // Próbáljuk meg a chrome-linux64/chrome útvonalat
+                  const chromePath = path.join(fullPath, 'chrome-linux64', 'chrome');
+                  if (fsSync.existsSync(chromePath)) {
+                    return chromePath;
+                  }
+                  
+                  // Rekurzívan keresünk
+                  const subPath = findChromeInDir(fullPath, depth + 1);
+                  if (subPath) return subPath;
+                }
               }
-              // Rekurzívan keresünk
-              const subPath = findChromeInDir(path.join(dir, entry.name));
-              if (subPath) return subPath;
+            } catch (e) {
+              // Ha nincs jogosultság olvasni, folytatjuk
+              continue;
             }
+            return null;
+          };
+          
+          const foundPath = findChromeInDir(chromeCacheDir);
+          if (foundPath) {
+            console.log(`Found Chrome in cache directory at: ${foundPath}`);
+            executablePath = foundPath;
           }
-          return null;
-        };
-        
-        const foundPath = findChromeInDir(cacheDir);
-        if (foundPath) {
-          console.log(`Found Chrome in cache directory at: ${foundPath}`);
-          executablePath = foundPath;
         }
       } catch (e) {
         console.log('Error searching cache directory:', e.message);
@@ -188,12 +215,17 @@ const generatePDF = async (quoteData) => {
       ]
     };
     
-    // Csak akkor adjuk hozzá az executablePath-ot, ha van értéke
-    if (executablePath) {
+    // Csak akkor adjuk hozzá az executablePath-ot, ha van értéke és létezik
+    // Ha nincs, ne adjunk meg executablePath-ot, hagyjuk, hogy a Puppeteer automatikusan keresse
+    // A Puppeteer automatikusan próbálja megtalálni a Chrome-ot, de ha nem találja, akkor dob hibát
+    // Ebben az esetben a build során kell telepíteni a Chrome-ot
+    if (executablePath && fsSync.existsSync(executablePath)) {
       launchOptions.executablePath = executablePath;
       console.log(`Using Chrome at: ${executablePath}`);
     } else {
-      console.log('No explicit Chrome path set, Puppeteer will try to find it automatically');
+      console.log('No Chrome path found, Puppeteer will try to find it automatically');
+      console.log('If Chrome is not found, make sure it is installed during build with: npx puppeteer browsers install chrome');
+      // Ne adjunk meg executablePath-ot, hagyjuk, hogy a Puppeteer automatikusan keresse
     }
     
     const browser = await puppeteer.launch(launchOptions);
