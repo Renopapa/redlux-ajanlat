@@ -128,6 +128,7 @@ const generatePDF = async (quoteData) => {
     
     const launchOptions = {
       headless: true,
+      timeout: 30000, // 30 másodperc timeout a browser indításához
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
@@ -138,7 +139,21 @@ const generatePDF = async (quoteData) => {
         '--disable-background-timer-throttling',
         '--disable-backgrounding-occluded-windows',
         '--disable-renderer-backgrounding',
-        '--single-process' // Render.com-on néha szükséges
+        '--disable-web-security',
+        '--disable-features=IsolateOrigins,site-per-process',
+        '--disable-site-isolation-trials',
+        '--disable-blink-features=AutomationControlled',
+        '--no-first-run',
+        '--no-default-browser-check',
+        '--disable-default-apps',
+        '--disable-popup-blocking',
+        '--disable-translate',
+        '--disable-background-networking',
+        '--disable-sync',
+        '--metrics-recording-only',
+        '--mute-audio',
+        '--no-zygote',
+        '--disable-ipc-flooding-protection'
       ]
     };
     
@@ -156,21 +171,36 @@ const generatePDF = async (quoteData) => {
     }
     
     const browser = await puppeteer.launch(launchOptions);
-
     
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-    await page.emulateMediaType('screen');
-await page.waitForNetworkIdle({ idleTime: 500, timeout: 10000 });
-
-    const pdf = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-      margin: { top: 0, right: 0, bottom: 0, left: 0 }
-    });
-    
-    await browser.close();
-    return pdf;
+    try {
+      const page = await browser.newPage();
+      
+      // Timeout beállítása a page műveletekhez
+      page.setDefaultTimeout(30000); // 30 másodperc
+      page.setDefaultNavigationTimeout(30000);
+      
+      // HTML beállítása - domcontentloaded gyorsabb mint networkidle0
+      await page.setContent(html, { 
+        waitUntil: 'domcontentloaded', // Gyorsabb mint networkidle0
+        timeout: 30000 
+      });
+      
+      // Media type beállítása
+      await page.emulateMediaType('screen');
+      
+      // PDF generálás timeout-tal
+      const pdf = await page.pdf({
+        format: 'A4',
+        printBackground: true,
+        margin: { top: 0, right: 0, bottom: 0, left: 0 },
+        timeout: 30000 // 30 másodperc timeout
+      });
+      
+      return pdf;
+    } finally {
+      // Mindig zárjuk be a browser-t, még ha hiba is történik
+      await browser.close();
+    }
     
   } catch (error) {
     console.error('PDF generálási hiba:', error);

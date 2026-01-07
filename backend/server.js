@@ -737,9 +737,19 @@ app.get('/api/revenue/monthly-stats', async (req, res) => {
 
 
 app.post('/api/generate-pdf', async (req, res) => {
+  // Timeout beállítása - 60 másodperc (hosszabb mint a Puppeteer timeout)
+  req.setTimeout(60000);
+  res.setTimeout(60000);
+  
   try {
     const quoteData = req.body;
+    const startTime = Date.now();
+    console.log('PDF generálás kezdése...');
+    
     const pdfRaw = await generatePDF(quoteData);
+    
+    const duration = Date.now() - startTime;
+    console.log(`PDF generálás befejezve: ${duration}ms`);
 
     // Normalizálás: legyen belőle Buffer, akkor is ha Uint8Array jön
     const pdf = Buffer.isBuffer(pdfRaw) ? pdfRaw : Buffer.from(pdfRaw);
@@ -760,7 +770,11 @@ app.post('/api/generate-pdf', async (req, res) => {
     res.end(pdf);
   } catch (error) {
     console.error('PDF route error:', error);
-    res.status(500).json({ error: 'PDF generálás sikertelen', details: error.message });
+    if (error.message && error.message.includes('timeout')) {
+      res.status(504).json({ error: 'PDF generálás timeout', details: 'A PDF generálás túl sokáig tartott' });
+    } else {
+      res.status(500).json({ error: 'PDF generálás sikertelen', details: error.message });
+    }
   }
 });
 
