@@ -7,6 +7,7 @@ import {
   Button, 
   Grid, 
   Paper,
+  Autocomplete,
   Select,
   MenuItem,
   FormControl,
@@ -187,11 +188,10 @@ const fetchProducts = async () => {
     }
   };
 
-  const handleProductChange = (e) => {
-    const productName = e.target.value;
+  const handleProductSelect = (product) => {
+    const productName = product?.name || '';
     setSelectedProduct(productName);
-    const product = products.find(p => p.name === productName);
-    
+
     if (product) {
       setCurrentUnit(product.unit);
       setSelectedColor('');
@@ -199,7 +199,7 @@ const fetchProducts = async () => {
       setCurrentUnit('');
       setSelectedColor('');
     }
-  
+
     console.log('Selected product:', productName);
     console.log('Available colors:', availableColors);
   };
@@ -697,6 +697,8 @@ const handleDownloadPDF = async () => {
     onChange={(e) => {
       setSelectedCategory(e.target.value);
       setSelectedProduct('');
+      setCurrentUnit('');
+      setSelectedColor('');
     }}
     label="Kategória"
   >
@@ -707,21 +709,22 @@ const handleDownloadPDF = async () => {
 </FormControl>
               </Grid>
               <Grid item xs={12} sm={4}>
-                <FormControl fullWidth variant="outlined">
-                  <InputLabel>Termék</InputLabel>
-                  <Select
-  value={selectedProduct}
-  onChange={handleProductChange}
-  label="Termék"
-  disabled={!selectedCategory}
->
-  {products
-    .filter(product => product.category === selectedCategory)
-    .map((product) => (
-      <MenuItem key={product.name} value={product.name}>{product.name}</MenuItem>
-    ))}
-</Select>
-                </FormControl>
+                <Autocomplete
+                  options={products.filter((p) => p.category === selectedCategory)}
+                  getOptionLabel={(option) => option?.name ?? ''}
+                  value={products.find((p) => p.name === selectedProduct) || null}
+                  onChange={(_, newValue) => handleProductSelect(newValue)}
+                  disabled={!selectedCategory}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Termék"
+                      variant="outlined"
+                    />
+                  )}
+                  isOptionEqualToValue={(option, value) => option?.name === value?.name}
+                  clearOnEscape
+                />
               </Grid>
               <Grid item xs={12} sm={4}>
               <FormControl fullWidth variant="outlined">
