@@ -31,7 +31,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import QuotePDF from '../components/QuotePDF';
-import { getColorSurcharge, availableColors } from '../data/productData';
+import { availableColors } from '../data/productData';
+import { calculateQuoteItem } from '../lib/pricingEngine';
 import { FormControlLabel, Checkbox } from '@mui/material';
 
 import API_URL from '../config/api';
@@ -211,74 +212,44 @@ const fetchProducts = async () => {
         setError('A kiválasztott termék nem található.');
         return;
       }
-        
-      let dimensions = '';
-      let area = 0;
+      
+      try {
+        const calculated = calculateQuoteItem({
+          product,
+          color: selectedColor,
+          widthCm: width,
+          heightCm: height,
+          lengthM: length,
+          quantity,
+        });
+
+        const newItem = {
+          product: calculated.productName,
+          dimensions: calculated.dimensions,
+          quantity: calculated.quantity,
+          color: calculated.color,
+          materialPrice: calculated.materialPrice,
+          laborCost: calculated.laborCost,
+          discount: calculated.discount,
+          totalPrice: calculated.totalPrice,
+          area: calculated.area,
+        };
   
-      const roundUpToFirstDecimal = (num) => Math.ceil(num * 10) / 10;
-  
-      switch (product.unit) {
-        case 'm2':
-          if (!width || !height) {
-            setError('Kérjük, adja meg a szélességet és magasságot.');
-            return;
-          }
-          const widthInMeters = roundUpToFirstDecimal(parseFloat(width) / 100);
-          const heightInMeters = roundUpToFirstDecimal(parseFloat(height) / 100);
-          area = widthInMeters * heightInMeters;
-          area = Math.max(area, 1.3);
-          dimensions = `${widthInMeters.toFixed(1)}x${heightInMeters.toFixed(1)} m`;
-          break;
-        case 'm':
-          if (!length) {
-            setError('Kérjük, adja meg a hosszúságot.');
-            return;
-          }
-          const roundedLength = roundUpToFirstDecimal(parseFloat(length));
-          area = roundedLength;
-          dimensions = `${roundedLength.toFixed(1)} m`;
-          break;
-        case 'db':
-          dimensions = `${quantity} db`;
-          area = 1; // Itt a változtatás: az area 1 lesz, nem pedig a mennyiség
-          break;
-        default:
-          dimensions = `${quantity} ${product.unit}`;
-          area = 1; // Itt is 1-et használunk alapértelmezettként
+        if (editingItemIndex !== null) {
+          const newQuoteItems = [...quoteItems];
+          newQuoteItems[editingItemIndex] = newItem;
+          setQuoteItems(newQuoteItems);
+          setEditingItemIndex(null);
+        } else {
+          setQuoteItems([...quoteItems, newItem]);
+        }
+    
+        resetProductForm();
+        setSuccessMessage('Termék sikeresen hozzáadva az árajánlathoz.');
+      } catch (calcError) {
+        console.error('Price calculation error:', calcError);
+        setError(calcError.message || 'Hiba történt az ár kalkulációja során.');
       }
-  
-      const colorSurcharge = getColorSurcharge(product.category, selectedColor);
-      const basePrice = product.basePrice * area;
-      const priceWithSurcharge = basePrice * (1 + colorSurcharge / 100);
-      const materialPrice = priceWithSurcharge * quantity; // Itt már figyelembe vesszük a mennyiséget
-      const laborCost = (product.laborCost || 0) * quantity;
-      const totalPriceBeforeDiscount = materialPrice + laborCost;
-      const discount = product.discount || 0;
-      const totalPrice = totalPriceBeforeDiscount * (1 - discount / 100);
-  
-      const newItem = {
-        product: selectedProduct,
-        dimensions: dimensions,
-        quantity,
-        color: selectedColor,
-        materialPrice: materialPrice,
-        laborCost: laborCost,
-        discount: discount,
-        totalPrice: totalPrice,
-        area: area > 0 ? area.toFixed(2) : null,
-      };
-  
-      if (editingItemIndex !== null) {
-        const newQuoteItems = [...quoteItems];
-        newQuoteItems[editingItemIndex] = newItem;
-        setQuoteItems(newQuoteItems);
-        setEditingItemIndex(null);
-      } else {
-        setQuoteItems([...quoteItems, newItem]);
-      }
-  
-      resetProductForm();
-      setSuccessMessage('Termék sikeresen hozzáadva az árajánlathoz.');
     } else {
       setError('Kérjük, válasszon terméket és adjon meg érvényes mennyiséget.');
     }

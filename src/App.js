@@ -7,6 +7,7 @@ import QuoteSearchPage from './pages/QuoteSearchPage';
 import ProductManagementPage from './pages/ProductManagementPage';
 import StatisticsPage from './pages/StatisticsPage';
 import RevenueTracker from './pages/RevenueTracker';
+import PublicCalculatorWidget from './components/PublicCalculatorWidget';
 
 // Új komponens a navigációs linkek kezelésére
 function NavLink({ to, children }) {
@@ -48,6 +49,7 @@ function App() {
     { text: 'Termékek kezelése', path: '/products' },
     { text: 'Statisztikák', path: '/statistics' },
     { text: 'Bevétel-Kiadás', path: '/revenue-tracker' },
+    { text: 'Publikus kalkulátor (demo)', path: '/public-calculator' },
   ];
 
   const drawerContent = (
@@ -104,6 +106,7 @@ function App() {
         <Route path="/products" element={<ProductManagementPage />} />
         <Route path="/statistics" element={<StatisticsPage />} />
         <Route path="/revenue-tracker" element={<RevenueTracker />} />
+        <Route path="/public-calculator" element={<PublicCalculatorWidget />} />
       </Routes>
     </Router>
   );
