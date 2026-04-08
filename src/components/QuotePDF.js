@@ -72,7 +72,7 @@ const QuotePDF = ({ clientName, clientId, clientAddress, clientPhone, clientEmai
         
         <Text style={styles.infoText}>
           Ajánlat készítés dátuma: {new Date().toLocaleDateString('hu-HU')}
-          {'\n'}Érvényességi idő: {new Date(Date.now() + 7*24*60*60*1000).toLocaleDateString('hu-HU')}
+          {'\n'}Érvényességi idő: {new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toLocaleDateString('hu-HU')}
           {'\n'}
           {'\n'}- 1,3 m² alatti termék esetén a termék ára egységáras.
           {'\n'}- A kalkuláció készítése során, a méretek egy tizedes jegyig felfelé kerülnek kerekítésre.

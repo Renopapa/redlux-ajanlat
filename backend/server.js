@@ -98,24 +98,6 @@ const companyFinanceSchema = new mongoose.Schema({
 
 const CompanyFinance = mongoose.model('CompanyFinance', companyFinanceSchema);
 
-const publicLeadSchema = new mongoose.Schema(
-  {
-    name: String,
-    email: String,
-    phone: String,
-    message: String,
-    quoteItem: Object,
-    priceRange: {
-      min: Number,
-      max: Number,
-    },
-    source: String,
-  },
-  { timestamps: true }
-);
-
-const PublicLead = mongoose.model('PublicLead', publicLeadSchema);
-
 const generateUniqueClientId = async () => {
   while (true) {
     const clientId = Math.floor(100000 + Math.random() * 900000).toString();
@@ -319,6 +301,19 @@ app.patch('/api/quotes/:id/status', async (req, res) => {
   }
 });
 
+app.delete('/api/quotes/:id', async (req, res) => {
+  try {
+    const deleted = await Quote.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ message: 'Árajánlat nem található' });
+    }
+    res.json({ message: 'Árajánlat törölve' });
+  } catch (error) {
+    console.error('Error deleting quote:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Módosítsuk a /api/quotes/:id/versions végpontot
 app.get('/api/quotes/:id/versions', async (req, res) => {
   try {
@@ -365,17 +360,6 @@ app.get('/api/products', async (req, res) => {
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).json({ message: error.message });
-  }
-});
-
-app.post('/api/public-leads', async (req, res) => {
-  try {
-    const lead = new PublicLead(req.body);
-    await lead.save();
-    res.status(201).json({ success: true });
-  } catch (error) {
-    console.error('Error saving public lead:', error);
-    res.status(400).json({ message: error.message });
   }
 });
 

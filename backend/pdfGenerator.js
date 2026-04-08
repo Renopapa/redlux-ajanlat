@@ -77,7 +77,7 @@ const generatePDF = async (quoteData) => {
       finalDiscountAmount,
       finalTotal,
       date: new Date().toLocaleDateString('hu-HU'),
-      validUntil: new Date(Date.now() + 7*24*60*60*1000).toLocaleDateString('hu-HU')
+      validUntil: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toLocaleDateString('hu-HU')
     });
 
     // Chrome executable path meghatározása

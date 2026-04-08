@@ -11,8 +11,11 @@ import {
   CircularProgress,
   Box,
   Snackbar,
-  Alert
+  Alert,
+  IconButton,
+  ListItemButton,
 } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import API_URL from '../config/api';
 
@@ -50,6 +53,25 @@ function QuoteSearchPage() {
     navigate(`/quote/${quoteId}`);
   };
 
+  const handleDelete = async (e, quoteId) => {
+    e.stopPropagation();
+    if (!window.confirm('Biztosan törlöd ezt az árajánlatot? A művelet nem vonható vissza.')) {
+      return;
+    }
+    try {
+      await axios.delete(`${API_URL}/quotes/${quoteId}`);
+      setQuotes((prev) => prev.filter((q) => q._id !== quoteId));
+      setSnackbar({ open: true, message: 'Árajánlat törölve.', severity: 'success' });
+    } catch (err) {
+      console.error('Delete quote error:', err);
+      setSnackbar({
+        open: true,
+        message: err.response?.data?.message || 'Nem sikerült törölni az árajánlatot.',
+        severity: 'error',
+      });
+    }
+  };
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -72,45 +94,54 @@ function QuoteSearchPage() {
       {error && <Typography color="error" sx={{ mt: 2 }}>{error}</Typography>}
       <List sx={{ mt: 2 }}>
         {filteredQuotes.map((quote) => (
-          <ListItem 
-            key={quote._id} 
-            button 
-            onClick={() => handleQuoteClick(quote._id)}
-            sx={{ 
-              border: '1px solid #e0e0e0', 
-              borderRadius: '4px', 
+          <ListItem
+            key={quote._id}
+            disablePadding
+            secondaryAction={
+              <IconButton
+                edge="end"
+                aria-label="Árajánlat törlése"
+                onClick={(e) => handleDelete(e, quote._id)}
+                color="error"
+              >
+                <DeleteIcon />
+              </IconButton>
+            }
+            sx={{
+              border: '1px solid #e0e0e0',
+              borderRadius: '4px',
               mb: 1,
-              '&:hover': {
-                backgroundColor: '#f5f5f5',
-              }
+              pr: 7,
             }}
           >
-            <ListItemText
-              primary={
-                <Typography variant="subtitle1">
-                  {`${quote.clientName || 'Névtelen ügyfél'} - ${quote.clientId || 'Nincs azonosító'}`}
-                </Typography>
-              }
-              secondary={
-                <React.Fragment>
-                  <Typography component="span" variant="body2" color="text.primary">
-                    {`Összeg: ${quote.total ? quote.total.toLocaleString('hu-HU', { style: 'currency', currency: 'HUF' }) : '0 Ft'}`}
+            <ListItemButton onClick={() => handleQuoteClick(quote._id)}>
+              <ListItemText
+                primary={
+                  <Typography variant="subtitle1">
+                    {`${quote.clientName || 'Névtelen ügyfél'} - ${quote.clientId || 'Nincs azonosító'}`}
                   </Typography>
-                  {` - Státusz: ${quote.status || 'Nincs státusz'}`}
-                  <br />
-                  {`Verzió: ${quote.version || '1'} - Létrehozva: ${new Date(quote.createdAt).toLocaleDateString('hu-HU')}`}
-                </React.Fragment>
-              }
-            />
+                }
+                secondary={
+                  <React.Fragment>
+                    <Typography component="span" variant="body2" color="text.primary">
+                      {`Összeg: ${quote.total ? quote.total.toLocaleString('hu-HU', { style: 'currency', currency: 'HUF' }) : '0 Ft'}`}
+                    </Typography>
+                    {` - Státusz: ${quote.status || 'Nincs státusz'}`}
+                    <br />
+                    {`Verzió: ${quote.version || '1'} - Létrehozva: ${new Date(quote.createdAt).toLocaleDateString('hu-HU')}`}
+                  </React.Fragment>
+                }
+              />
+            </ListItemButton>
           </ListItem>
         ))}
       </List>
       {filteredQuotes.length === 0 && (
         <Typography sx={{ mt: 2 }}>Nincs találat a keresési feltételeknek megfelelően.</Typography>
       )}
-      <Snackbar 
-        open={snackbar.open} 
-        autoHideDuration={6000} 
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
       >
         <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} sx={{ width: '100%' }}>
