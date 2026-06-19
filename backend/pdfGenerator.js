@@ -33,6 +33,8 @@ Handlebars.registerHelper('subtract', (a, b) => {
   return (a || 0) - (b || 0);
 });
 
+const PRIORITY_FEE = 20000;
+
 const generatePDF = async (quoteData) => {
   try {
     const templatePath = path.join(__dirname, 'templates', 'quote-template.html');
@@ -66,7 +68,8 @@ const generatePDF = async (quoteData) => {
     );
     
     const finalDiscountAmount = subtotal * (quoteData.discount || 0) / 100;
-    const finalTotal = subtotal - finalDiscountAmount;
+    const priorityFee = quoteData.priorityService ? PRIORITY_FEE : 0;
+    const finalTotal = subtotal - finalDiscountAmount + priorityFee;
     
     const template = Handlebars.compile(templateContent);
     const html = template({
@@ -76,6 +79,7 @@ const generatePDF = async (quoteData) => {
       itemDiscountsTotal: itemDiscountsTotal > 0 ? itemDiscountsTotal : null,
       finalDiscountAmount,
       finalTotal,
+      priorityFee,
       date: new Date().toLocaleDateString('hu-HU'),
       validUntil: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toLocaleDateString('hu-HU')
     });

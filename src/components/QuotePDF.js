@@ -77,7 +77,7 @@ const QuotePDF = ({ clientName, clientId, clientAddress, clientPhone, clientEmai
           {'\n'}- 1,3 m² alatti termék esetén a termék ára egységáras.
           {'\n'}- A kalkuláció készítése során, a méretek egy tizedes jegyig felfelé kerülnek kerekítésre.
           {'\n'}
-          {'\n'}- A jelenlegi gazdasági helyzetre való tekintettel árainkat 1 hétig tudjuk garantálni.
+          {'\n'}- A jelenlegi gazdasági helyzetre való tekintettel árainkat 14 napig tudjuk garantálni.
           {'\n'}- Az ajánlat elfogadásával 50 000 Ft feletti megrendelés esetén, előleg fizetési kötelezettséget vállal, mely a teljes összeg 50%-a.
           {'\n'}- Megrendelése az előlegszámla kiegyenlítését követően válik véglegessé.
           {'\n'}- A végösszeg tartalmazza a kiszállás és a munkadíj költségét is.
@@ -124,7 +124,7 @@ const QuotePDF = ({ clientName, clientId, clientAddress, clientPhone, clientEmai
         <Text style={styles.reszosszeg}>Részösszeg: {formatNumber(originalTotal.toFixed(0))} Ft</Text>
         {itemDiscountsTotal > 0 && <Text style={styles.kedvezmeny}>Tételek kedvezménye: {formatNumber(itemDiscountsTotal.toFixed(0))} Ft</Text>}
         {discount > 0 && <Text style={styles.kedvezmeny}>További kedvezmény ({discount}%): {formatNumber(finalDiscountAmount.toFixed(0))} Ft</Text>}
-        <Text style={styles.total}>Végösszeg: {formatNumber(finalTotal.toFixed(0))} Ft</Text>
+        <Text style={styles.total}>Végösszeg: {formatNumber((total || finalTotal).toFixed(0))} Ft</Text>
         
         {notes && <Text style={styles.infoText}>Megjegyzések: {notes}</Text>}
         

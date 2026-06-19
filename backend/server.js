@@ -40,6 +40,7 @@ const quoteSchema = new mongoose.Schema({
   },
   surveyor: String,
   personalSurvey: { type: Boolean, default: false },
+  priorityService: { type: Boolean, default: false },
   version: { type: Number, default: 1 },
   createdAt: { type: Date, default: Date.now },
   notes: String,
@@ -117,6 +118,24 @@ const projectSchema = new mongoose.Schema({
 });
 
 const Project = mongoose.model('Project', projectSchema);
+
+const sortProductsByName = (products) =>
+  [...products].sort((a, b) =>
+    (a.name || '').localeCompare(b.name || '', 'hu', { sensitivity: 'base' })
+  );
+
+const sortProductsByUsage = async (products) => {
+  const usageStats = await Quote.aggregate([
+    { $unwind: '$quoteItems' },
+    { $group: { _id: '$quoteItems.product', count: { $sum: 1 } } },
+  ]);
+  const usageMap = new Map(usageStats.map((u) => [u._id, u.count]));
+  return [...products].sort((a, b) => {
+    const usageDiff = (usageMap.get(b.name) || 0) - (usageMap.get(a.name) || 0);
+    if (usageDiff !== 0) return usageDiff;
+    return (a.name || '').localeCompare(b.name || '', 'hu', { sensitivity: 'base' });
+  });
+};
 
 const calculateWeeklyStats = (revenues, companyFinances) => {
   let totalRevenue = 0;
@@ -356,7 +375,11 @@ app.get('/api/generate-client-id', async (req, res) => {
 app.get('/api/products', async (req, res) => {
   try {
     const products = await Product.find();
-    res.json(products);
+    const sortedProducts =
+      req.query.sort === 'usage'
+        ? await sortProductsByUsage(products)
+        : sortProductsByName(products);
+    res.json(sortedProducts);
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).json({ message: error.message });

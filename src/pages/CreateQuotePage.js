@@ -71,6 +71,7 @@ function CreateQuotePage() {
   const [loading, setLoading] = useState(false);
   //const [availableColors, setAvailableColors] = useState([]);
   const [personalSurvey, setPersonalSurvey] = useState(false);
+  const [priorityService, setPriorityService] = useState(false);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [clientNeeds, setClientNeeds] = useState('');
@@ -105,13 +106,15 @@ function CreateQuotePage() {
   }, []);
   
   useEffect(() => {
-    const uniqueCategories = [...new Set(products.map(p => p.category))];
+    const uniqueCategories = [...new Set(products.map(p => p.category))].sort((a, b) =>
+      (a || '').localeCompare(b || '', 'hu', { sensitivity: 'base' })
+    );
     setCategories(uniqueCategories);
   }, [products]);
 
 const fetchProducts = async () => {
   try {
-    const response = await axios.get(`${API_URL}/products`);
+    const response = await axios.get(`${API_URL}/products?sort=usage`);
     if (Array.isArray(response.data)) {
       setProducts(response.data);
     } else {
@@ -172,7 +175,8 @@ const fetchProducts = async () => {
       setDiscount(quoteData.discount || 0);
       setNotes(quoteData.notes || '');
       setSurveyor(quoteData.surveyor || '');
-      setPersonalSurvey(quoteData.personalSurvey || false);  // Hozzáadva
+      setPersonalSurvey(quoteData.personalSurvey || false);
+      setPriorityService(quoteData.priorityService || false);
     } else {
       console.error('Invalid quote data:', quoteData);
       setError('Érvénytelen árajánlat adat');
@@ -297,7 +301,8 @@ const fetchProducts = async () => {
   const calculateTotal = () => {
     const originalTotal = quoteItems.reduce((sum, item) => sum + item.totalPrice, 0);
     const finalDiscount = discount || 0;
-    return originalTotal * (1 - finalDiscount / 100);
+    const priorityFee = priorityService ? 20000 : 0;
+    return originalTotal * (1 - finalDiscount / 100) + priorityFee;
   };
 
   const handleOpenPreview = () => {
@@ -328,7 +333,8 @@ const fetchProducts = async () => {
         status: quoteStatus,
         notes,
         surveyor,
-        personalSurvey // Új mező hozzáadva
+        personalSurvey,
+        priorityService,
       };
       
       let response;
@@ -368,6 +374,8 @@ const fetchProducts = async () => {
     setQuoteStatus('Piszkozat');
     setDiscount(0);
     setNotes('');
+    setPersonalSurvey(false);
+    setPriorityService(false);
     generateClientId();
   }, []);
 
@@ -402,8 +410,8 @@ const handleDownloadPDF = async () => {
   setLoading(true);
   try {
     const payload = {
-      clientName, clientId, clientAddress, clientPhone, clientEmail,clientNeeds,
-      quoteItems, total: calculateTotal(), discount, notes
+      clientName, clientId, clientAddress, clientPhone, clientEmail, clientNeeds,
+      quoteItems, total: calculateTotal(), discount, notes, priorityService,
     };
 
     const response = await axios.post(`${API_URL}/generate-pdf`, payload, {
@@ -622,6 +630,18 @@ const handleDownloadPDF = async () => {
                 />
               }
               label="Személyes felmérés"
+            />
+          </Grid>
+              <Grid item xs={12}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={priorityService}
+                  onChange={(e) => setPriorityService(e.target.checked)}
+                  name="priorityService"
+                />
+              }
+              label="Priority gyártás (+20 000 Ft, 8 munkanap – csak alap termékekre, belső jelölés)"
             />
           </Grid>
               <Grid item xs={12} sm={6}>
