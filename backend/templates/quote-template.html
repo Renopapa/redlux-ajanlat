@@ -309,6 +309,15 @@
       font-weight: 700;
       font-size: 11px;
     }
+
+    .item-note {
+      font-size: 8px;
+      color: #555;
+      font-weight: 400;
+      margin-top: 4px;
+      line-height: 1.4;
+      font-style: italic;
+    }
     
     .summary-box {
       background: linear-gradient(135deg, #001F3F 0%, #0066FF 100%);
@@ -824,7 +833,12 @@ Több száz elégedett ügyfelünk választott már minket a precíz munkavégz�
       <tbody>
         {{#each quoteItems}}
         <tr>
-          <td><strong>{{this.product}}</strong></td>
+          <td>
+            <strong>{{this.product}}</strong>
+            {{#if this.itemNote}}
+            <div class="item-note">{{this.itemNote}}</div>
+            {{/if}}
+          </td>
           <td>{{this.dimensions}}</td>
           <td>{{this.color}}</td>
           <td style="text-align: center;">{{this.quantity}}</td>

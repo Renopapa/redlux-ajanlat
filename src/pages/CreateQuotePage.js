@@ -54,6 +54,7 @@ function CreateQuotePage() {
   const [height, setHeight] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [length, setLength] = useState('');
+  const [itemNote, setItemNote] = useState('');
   const [quoteItems, setQuoteItems] = useState([]);
   const [currentUnit, setCurrentUnit] = useState('');
   const [openPreview, setOpenPreview] = useState(false);
@@ -237,6 +238,7 @@ const fetchProducts = async () => {
           discount: calculated.discount,
           totalPrice: calculated.totalPrice,
           area: calculated.area,
+          ...(itemNote.trim() ? { itemNote: itemNote.trim() } : {}),
         };
   
         if (editingItemIndex !== null) {
@@ -268,6 +270,7 @@ const fetchProducts = async () => {
     setQuantity(1);
     setSelectedCategory('');
     setCurrentUnit('');
+    setItemNote('');
   };
 
   const handleRemoveProduct = (index) => {
@@ -280,6 +283,7 @@ const fetchProducts = async () => {
     setSelectedProduct(itemToEdit.product);
     setSelectedColor(itemToEdit.color);
     setQuantity(itemToEdit.quantity);
+    setItemNote(itemToEdit.itemNote || '');
     
     const product = products.find(p => p.name === itemToEdit.product);
     if (product) {
@@ -783,6 +787,18 @@ const handleDownloadPDF = async () => {
                   }}
                 />
               </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Tétel megjegyzése (opcionális)"
+                  value={itemNote}
+                  onChange={(e) => setItemNote(e.target.value)}
+                  variant="outlined"
+                  multiline
+                  rows={2}
+                  placeholder="Pl. Nappali ablak, hálószoba ajtó, motor jobb oldal..."
+                />
+              </Grid>
               <Grid item xs={12} sm={2}>
                 <Button 
                   variant="contained" 
@@ -829,6 +845,11 @@ const handleDownloadPDF = async () => {
                           </Typography>
                           {item.discount > 0 && (
                             <Typography variant="body2" color="error">{`Kedvezmény: ${item.discount}%`}</Typography>
+                          )}
+                          {item.itemNote && (
+                            <Typography variant="body2" sx={{ fontStyle: 'italic', color: '#555', mt: 0.5 }}>
+                              {`Megjegyzés: ${item.itemNote}`}
+                            </Typography>
                           )}
                         </>
                       }

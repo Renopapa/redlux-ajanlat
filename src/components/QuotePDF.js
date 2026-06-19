@@ -100,7 +100,14 @@ const QuotePDF = ({ clientName, clientId, clientAddress, clientPhone, clientEmai
             const discountedUnitPrice = item.totalPrice / item.quantity;
             return (
               <View style={styles.tableRow} key={index}>
-                <View style={[styles.tableCol, { width: '25%' }]}><Text style={styles.tableCell}>{item.product || ''}</Text></View>
+              <View style={[styles.tableCol, { width: '25%' }]}>
+                <Text style={styles.tableCell}>{item.product || ''}</Text>
+                {item.itemNote ? (
+                  <Text style={{ fontSize: 7, color: '#666', fontStyle: 'italic', marginTop: 2 }}>
+                    {item.itemNote}
+                  </Text>
+                ) : null}
+              </View>
                 <View style={styles.tableCol}><Text style={styles.tableCell}>{item.dimensions || ''}</Text></View>
                 <View style={styles.tableCol}><Text style={styles.tableCell}>{item.color || ''}</Text></View>
                 <View style={[styles.tableCol, { width: '10%' }]}><Text style={styles.tableCell}>{item.quantity || ''}</Text></View>
