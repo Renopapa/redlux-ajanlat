@@ -32,17 +32,68 @@
         animation: none !important;
       }
       
-      /* Oldaltörés kezelés */
-      .pricing-table {
+      .quote-section {
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        page-break-inside: auto !important;
+        page-break-after: always !important;
+      }
+
+      .quote-section-header {
+        page-break-after: avoid !important;
+        break-after: avoid-page !important;
+      }
+
+      .quote-table-wrap {
         page-break-inside: auto !important;
       }
-      
+
+      .pricing-table {
+        page-break-inside: auto !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+      }
+
+      .pricing-table thead {
+        display: table-header-group !important;
+      }
+
+      .pricing-table tbody {
+        display: table-row-group !important;
+      }
+
+      .pricing-table thead th {
+        background: #0066FF !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
       .pricing-table tr {
         page-break-inside: avoid !important;
+        break-inside: avoid-page !important;
       }
-      
+
+      .pricing-table td,
+      .pricing-table th {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+      }
+
+      .quote-footer-block {
+        page-break-inside: avoid !important;
+        break-inside: avoid-page !important;
+      }
+
       .summary-box {
         page-break-inside: avoid !important;
+        break-inside: avoid-page !important;
+      }
+
+      .priority-section {
+        page-break-inside: avoid !important;
+        break-inside: avoid-page !important;
       }
     }
     
@@ -150,6 +201,38 @@
       margin-bottom: 15px;
       position: relative;
       display: inline-block;
+    }
+
+    .page-quote .pricing-intro {
+      padding: 10px 12px;
+      margin: 10px 0;
+    }
+
+    .page-quote .pricing-intro li,
+    .quote-section .pricing-intro li {
+      font-size: 8px;
+      padding: 2px 0;
+    }
+
+    .page-quote .client-info-box,
+    .quote-section .client-info-box {
+      margin-bottom: 14px;
+    }
+
+    .quote-section {
+      width: 210mm;
+      padding: 35mm 18mm 30mm 18mm;
+      background: white;
+      page-break-after: always;
+    }
+
+    .quote-section .pricing-intro {
+      padding: 10px 12px;
+      margin: 10px 0;
+    }
+
+    .quote-table-wrap {
+      margin: 12px 0;
     }
     
     .page-title::after {
@@ -277,11 +360,12 @@
     .pricing-table {
       width: 100%;
       border-collapse: collapse;
-      margin: 15px 0;
+      margin: 0;
       font-size: 10px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.06);
       border-radius: 8px;
       overflow: hidden;
+      table-layout: fixed;
     }
     
     .pricing-table thead {
@@ -323,8 +407,8 @@
       background: linear-gradient(135deg, #001F3F 0%, #0066FF 100%);
       color: white;
       border-radius: 10px;
-      padding: 18px;
-      margin-top: 15px;
+      padding: 14px 16px;
+      margin-top: 12px;
     }
     
     .summary-row {
@@ -360,37 +444,37 @@
       background: linear-gradient(135deg, #f8fbff 0%, #eef4ff 100%);
       border: 2px solid #0066FF;
       border-radius: 12px;
-      padding: 16px 18px;
-      margin-top: 18px;
+      padding: 12px 14px;
+      margin-top: 14px;
     }
 
     .priority-section-title {
       color: #001F3F;
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 800;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
       text-align: center;
     }
 
     .priority-section-sub {
-      font-size: 10px;
+      font-size: 8.5px;
       color: #555;
       text-align: center;
-      margin-bottom: 14px;
-      line-height: 1.4;
+      margin-bottom: 10px;
+      line-height: 1.35;
     }
 
     .priority-compare {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
+      gap: 8px;
     }
 
     .priority-col {
       background: white;
       border: 2px solid #e0e8f5;
       border-radius: 10px;
-      padding: 14px 12px;
+      padding: 12px 8px 10px;
       text-align: center;
     }
 
@@ -425,6 +509,11 @@
       color: #CC8400;
     }
 
+    .allin-total-price {
+      margin-top: 4px;
+      font-size: 11px !important;
+    }
+
     .priority-col-selected {
       border-color: #00A651;
       background: linear-gradient(180deg, #ffffff 0%, #f0fff5 100%);
@@ -446,20 +535,20 @@
     }
 
     .priority-label {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       color: #666;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: 6px;
-      margin-top: 4px;
+      margin-bottom: 4px;
+      margin-top: 2px;
     }
 
     .priority-time {
-      font-size: 18px;
+      font-size: 15px;
       font-weight: 800;
       color: #001F3F;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       line-height: 1.2;
     }
 
@@ -468,35 +557,35 @@
     }
 
     .priority-price {
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 800;
       color: #0066FF;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .priority-desc {
-      font-size: 9px;
+      font-size: 8px;
       color: #666;
-      line-height: 1.4;
+      line-height: 1.3;
     }
 
     .priority-cta {
-      margin-top: 12px;
+      margin-top: 10px;
       text-align: center;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 600;
       color: #0066FF;
       background: white;
       border: 1px dashed #0066FF;
       border-radius: 8px;
-      padding: 10px;
-      line-height: 1.5;
+      padding: 8px;
+      line-height: 1.4;
     }
 
     .priority-selected-note {
-      margin-top: 12px;
+      margin-top: 10px;
       text-align: center;
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 700;
       color: #00A651;
       background: #f0fff5;
@@ -798,7 +887,8 @@ Több száz elégedett ügyfelünk választott már minket a precíz munkavégz�
   </div>
 
   <!-- OLDAL 2: AJÁNLAT -->
-  <div class="page">
+  <div class="quote-section">
+    <div class="quote-section-header">
     <div class="client-info-box">
       <div class="client-info-left">
         <h3 style="color: #0066FF; font-size: 14px; margin-bottom: 8px;">RedLux Redőny Kft.</h3>
@@ -838,7 +928,9 @@ Több száz elégedett ügyfelünk választott már minket a precíz munkavégz�
 <li>Az ajánlat elfogadásával 50 000 Ft feletti megrendelés esetén, előleg fizetési kötelezettséget vállal, mely a teljes összeg 50%-a.</li>
       </ul>
     </div>
-    
+    </div>
+
+    <div class="quote-table-wrap">
     <table class="pricing-table">
       <thead>
         <tr>
@@ -882,7 +974,9 @@ Több száz elégedett ügyfelünk választott már minket a precíz munkavégz�
         {{/each}}
       </tbody>
     </table>
+    </div>
 
+    <div class="quote-footer-block">
     <div class="priority-section">
       <h4 class="priority-section-title">Gyártási opciók – válassza ki, ami Önnek a legjobb!</h4>
       <p class="priority-section-sub">Standard gyártás benne van az árban. Priority gyorsabb (+20 000 Ft, csak alap termékekre). <strong>All-in:</strong> 15% kedvezmény + Priority gyártás, ha a teljes összeget előre kifizeti.</p>
@@ -905,7 +999,7 @@ Több száz elégedett ügyfelünk választott már minket a precíz munkavégz�
           <div class="priority-time">8 munkanap</div>
           <div class="priority-price">− 15%</div>
           <div class="priority-desc">Teljes összeg előre · Priority benne</div>
-          <div class="priority-price" style="margin-top: 6px; font-size: 12px;">{{formatNumber allInTotal}} Ft</div>
+          <div class="priority-price allin-total-price">{{formatNumber allInTotal}} Ft</div>
         </div>
       </div>
       {{#if allInService}}
@@ -963,6 +1057,7 @@ Több száz elégedett ügyfelünk választott már minket a precíz munkavégz�
       <p style="font-size: 10px; color: #444; line-height: 1.5;">{{notes}}</p>
     </div>
     {{/if}}
+    </div>
   </div>
 
   <!-- OLDAL 3: GARANCIA + REFERENCIÁK -->
