@@ -671,7 +671,7 @@ const handleDownloadPDF = async () => {
                   name="allInService"
                 />
               }
-              label="All-in csomag (−15%, Priority gyártás, teljes összeg előre fizetése)"
+              label="All-in csomag (−15%, teljes összeg előre, Priority beszerelés)"
             />
           </Grid>
               <Grid item xs={12} sm={6}>

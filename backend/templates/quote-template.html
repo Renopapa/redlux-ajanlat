@@ -979,7 +979,7 @@ Több száz elégedett ügyfelünk választott már minket a precíz munkavégz�
     <div class="quote-footer-block">
     <div class="priority-section">
       <h4 class="priority-section-title">Gyártási opciók – válassza ki, ami Önnek a legjobb!</h4>
-      <p class="priority-section-sub">Standard gyártás benne van az árban. Priority gyorsabb (+20 000 Ft, csak alap termékekre). <strong>All-in:</strong> 15% kedvezmény + Priority gyártás, ha a teljes összeget előre kifizeti.</p>
+      <p class="priority-section-sub">Standard gyártás benne van az árban. Priority gyorsabb (+20 000 Ft, csak alap termékekre). <strong>All-in:</strong> −15%, a megrendelés teljes összegének előre fizetése esetén, Priority beszereléssel.</p>
       <div class="priority-compare">
         <div class="priority-col priority-col-standard">
           <div class="priority-label">Standard</div>
@@ -998,16 +998,16 @@ Több száz elégedett ügyfelünk választott már minket a precíz munkavégz�
           <div class="priority-label">All-in</div>
           <div class="priority-time">8 munkanap</div>
           <div class="priority-price">− 15%</div>
-          <div class="priority-desc">Teljes összeg előre · Priority benne</div>
+          <div class="priority-desc">A megrendelés teljes összegének előre fizetése esetén, Priority beszereléssel.</div>
           <div class="priority-price allin-total-price">{{formatNumber allInTotal}} Ft</div>
         </div>
       </div>
       {{#if allInService}}
-      <p class="priority-selected-note">✓ Ez az ajánlat All-in csomaggal készült (−15%, teljes összeg előre, Priority gyártás benne).</p>
+      <p class="priority-selected-note">✓ Ez az ajánlat All-in csomaggal készült (−15%, teljes összeg előre, Priority beszerelés).</p>
       {{else if priorityService}}
       <p class="priority-selected-note">✓ Ez az ajánlat Priority gyártással készült (+20 000 Ft).</p>
       {{else}}
-      <p class="priority-cta">Szeretné gyorsabban megkapni a terméket? Kérje a Priority gyártást, vagy spóroljon 15%-ot az All-in csomaggal teljes előre fizetéssel!</p>
+      <p class="priority-cta">Szeretné gyorsabban megkapni a terméket? Kérje a Priority gyártást, vagy válassza az All-in csomagot teljes előre fizetéssel és Priority beszereléssel!</p>
       {{/if}}
     </div>
     
@@ -1024,11 +1024,11 @@ Több száz elégedett ügyfelünk választott már minket a precíz munkavégz�
       {{/if}}
       {{#if allInService}}
       <div class="summary-row discount-row">
-        <div>All-in kedvezmény (15%, teljes összeg előre):</div>
+        <div>All-in kedvezmény (teljes összeg előre fizetése):</div>
         <div>-{{formatNumber allInDiscountAmount}} Ft</div>
       </div>
       <div class="summary-row">
-        <div>Priority gyártás (8 munkanap):</div>
+        <div>Priority beszerelés (8 munkanap):</div>
         <div>Benne van</div>
       </div>
       {{else}}
@@ -1158,7 +1158,7 @@ Köszönettel, üdvözlettel Konyor Ágnes"</p>
         <div class="cta-step">
           <div class="cta-step-number">3</div>
           <h4 class="cta-step-title">Telepítés</h4>
-          <p class="cta-step-desc">Standard: 4–6 hét, Priority: 8 munkanap (+20 000 Ft), vagy All-in: 15% kedvezmény + Priority előre fizetéssel</p>
+          <p class="cta-step-desc">Standard: 4–6 hét, Priority: 8 munkanap (+20 000 Ft), vagy All-in: teljes összeg előre + Priority beszerelés (−15%)</p>
         </div>
       </div>
       
