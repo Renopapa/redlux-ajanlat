@@ -34,6 +34,7 @@ Handlebars.registerHelper('subtract', (a, b) => {
 });
 
 const PRIORITY_FEE = 20000;
+const ALL_IN_DISCOUNT_PERCENT = 15;
 
 const generatePDF = async (quoteData) => {
   try {
@@ -69,7 +70,15 @@ const generatePDF = async (quoteData) => {
     
     const finalDiscountAmount = subtotal * (quoteData.discount || 0) / 100;
     const priorityFee = quoteData.priorityService ? PRIORITY_FEE : 0;
-    const finalTotal = subtotal - finalDiscountAmount + priorityFee;
+    const allInDiscountAmount = subtotal * ALL_IN_DISCOUNT_PERCENT / 100;
+    const allInTotal = subtotal - allInDiscountAmount;
+
+    let finalTotal;
+    if (quoteData.allInService) {
+      finalTotal = allInTotal;
+    } else {
+      finalTotal = subtotal - finalDiscountAmount + priorityFee;
+    }
     
     const template = Handlebars.compile(templateContent);
     const html = template({
@@ -80,6 +89,9 @@ const generatePDF = async (quoteData) => {
       finalDiscountAmount,
       finalTotal,
       priorityFee,
+      allInDiscountPercent: ALL_IN_DISCOUNT_PERCENT,
+      allInDiscountAmount,
+      allInTotal,
       date: new Date().toLocaleDateString('hu-HU'),
       validUntil: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toLocaleDateString('hu-HU')
     });

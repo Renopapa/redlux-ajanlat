@@ -73,6 +73,7 @@ function CreateQuotePage() {
   //const [availableColors, setAvailableColors] = useState([]);
   const [personalSurvey, setPersonalSurvey] = useState(false);
   const [priorityService, setPriorityService] = useState(false);
+  const [allInService, setAllInService] = useState(false);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [clientNeeds, setClientNeeds] = useState('');
@@ -178,6 +179,7 @@ const fetchProducts = async () => {
       setSurveyor(quoteData.surveyor || '');
       setPersonalSurvey(quoteData.personalSurvey || false);
       setPriorityService(quoteData.priorityService || false);
+      setAllInService(quoteData.allInService || false);
     } else {
       console.error('Invalid quote data:', quoteData);
       setError('Érvénytelen árajánlat adat');
@@ -303,10 +305,13 @@ const fetchProducts = async () => {
   };
 
   const calculateTotal = () => {
-    const originalTotal = quoteItems.reduce((sum, item) => sum + item.totalPrice, 0);
+    const subtotal = quoteItems.reduce((sum, item) => sum + item.totalPrice, 0);
+    if (allInService) {
+      return subtotal * 0.85;
+    }
     const finalDiscount = discount || 0;
     const priorityFee = priorityService ? 20000 : 0;
-    return originalTotal * (1 - finalDiscount / 100) + priorityFee;
+    return subtotal * (1 - finalDiscount / 100) + priorityFee;
   };
 
   const handleOpenPreview = () => {
@@ -339,6 +344,7 @@ const fetchProducts = async () => {
         surveyor,
         personalSurvey,
         priorityService,
+        allInService,
       };
       
       let response;
@@ -380,6 +386,7 @@ const fetchProducts = async () => {
     setNotes('');
     setPersonalSurvey(false);
     setPriorityService(false);
+    setAllInService(false);
     generateClientId();
   }, []);
 
@@ -415,7 +422,7 @@ const handleDownloadPDF = async () => {
   try {
     const payload = {
       clientName, clientId, clientAddress, clientPhone, clientEmail, clientNeeds,
-      quoteItems, total: calculateTotal(), discount, notes, priorityService,
+      quoteItems, total: calculateTotal(), discount, notes, priorityService, allInService,
     };
 
     const response = await axios.post(`${API_URL}/generate-pdf`, payload, {
@@ -641,11 +648,30 @@ const handleDownloadPDF = async () => {
               control={
                 <Checkbox
                   checked={priorityService}
-                  onChange={(e) => setPriorityService(e.target.checked)}
+                  onChange={(e) => {
+                    setPriorityService(e.target.checked);
+                    if (e.target.checked) setAllInService(false);
+                  }}
                   name="priorityService"
+                  disabled={allInService}
                 />
               }
               label="Priority gyártás (+20 000 Ft, 8 munkanap – csak alap termékekre, belső jelölés)"
+            />
+          </Grid>
+              <Grid item xs={12}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={allInService}
+                  onChange={(e) => {
+                    setAllInService(e.target.checked);
+                    if (e.target.checked) setPriorityService(false);
+                  }}
+                  name="allInService"
+                />
+              }
+              label="All-in csomag (−15%, Priority gyártás, teljes összeg előre fizetése)"
             />
           </Grid>
               <Grid item xs={12} sm={6}>

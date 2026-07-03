@@ -382,8 +382,8 @@
 
     .priority-compare {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
     }
 
     .priority-col {
@@ -403,6 +403,26 @@
       background: linear-gradient(180deg, #ffffff 0%, #f0f6ff 100%);
       box-shadow: 0 6px 18px rgba(0, 102, 255, 0.15);
       position: relative;
+    }
+
+    .priority-col-allin {
+      border-color: #FFB800;
+      background: linear-gradient(180deg, #ffffff 0%, #fffbf0 100%);
+      box-shadow: 0 6px 18px rgba(255, 184, 0, 0.2);
+      position: relative;
+    }
+
+    .priority-badge-allin {
+      background: #FFB800;
+      color: #001F3F;
+    }
+
+    .priority-col-allin .priority-time {
+      color: #CC8400;
+    }
+
+    .priority-col-allin .priority-price {
+      color: #CC8400;
     }
 
     .priority-col-selected {
@@ -864,8 +884,8 @@ Több száz elégedett ügyfelünk választott már minket a precíz munkavégz�
     </table>
 
     <div class="priority-section">
-      <h4 class="priority-section-title">Túl hosszú a gyártási idő? Próbálja ki a Priority gyártás szolgáltatásunkat.</h4>
-      <p class="priority-section-sub">A Priority gyártás <strong>csak alap termékekre</strong> vonatkozik (+20 000 Ft, 8 munkanap). Ha érdeklődik, keressen minket – szívesen tájékoztatjuk, hogy az Ön ajánlatára vonatkozik-e.</p>
+      <h4 class="priority-section-title">Gyártási opciók – válassza ki, ami Önnek a legjobb!</h4>
+      <p class="priority-section-sub">Standard gyártás benne van az árban. Priority gyorsabb (+20 000 Ft, csak alap termékekre). <strong>All-in:</strong> 15% kedvezmény + Priority gyártás, ha a teljes összeget előre kifizeti.</p>
       <div class="priority-compare">
         <div class="priority-col priority-col-standard">
           <div class="priority-label">Standard</div>
@@ -879,11 +899,21 @@ Több száz elégedett ügyfelünk választott már minket a precíz munkavégz�
           <div class="priority-price">+ 20 000 Ft</div>
           <div class="priority-desc">Csak alap termékekre</div>
         </div>
+        <div class="priority-col priority-col-allin{{#if allInService}} priority-col-selected{{/if}}">
+          <div class="priority-badge priority-badge-allin">Legjobb ajánlat</div>
+          <div class="priority-label">All-in</div>
+          <div class="priority-time">8 munkanap</div>
+          <div class="priority-price">− 15%</div>
+          <div class="priority-desc">Teljes összeg előre · Priority benne</div>
+          <div class="priority-price" style="margin-top: 6px; font-size: 12px;">{{formatNumber allInTotal}} Ft</div>
+        </div>
       </div>
-      {{#if priorityService}}
+      {{#if allInService}}
+      <p class="priority-selected-note">✓ Ez az ajánlat All-in csomaggal készült (−15%, teljes összeg előre, Priority gyártás benne).</p>
+      {{else if priorityService}}
       <p class="priority-selected-note">✓ Ez az ajánlat Priority gyártással készült (+20 000 Ft).</p>
       {{else}}
-      <p class="priority-cta">Szeretné gyorsabban megkapni a terméket? Kérje a Priority gyártás szolgáltatásunkat kollégáinknál.</p>
+      <p class="priority-cta">Szeretné gyorsabban megkapni a terméket? Kérje a Priority gyártást, vagy spóroljon 15%-ot az All-in csomaggal teljes előre fizetéssel!</p>
       {{/if}}
     </div>
     
@@ -898,6 +928,16 @@ Több száz elégedett ügyfelünk választott már minket a precíz munkavégz�
         <div>-{{formatNumber itemDiscountsTotal}} Ft</div>
       </div>
       {{/if}}
+      {{#if allInService}}
+      <div class="summary-row discount-row">
+        <div>All-in kedvezmény (15%, teljes összeg előre):</div>
+        <div>-{{formatNumber allInDiscountAmount}} Ft</div>
+      </div>
+      <div class="summary-row">
+        <div>Priority gyártás (8 munkanap):</div>
+        <div>Benne van</div>
+      </div>
+      {{else}}
       {{#if discount}}
       <div class="summary-row discount-row">
         <div>További kedvezmény ({{discount}}%):</div>
@@ -909,6 +949,7 @@ Több száz elégedett ügyfelünk választott már minket a precíz munkavégz�
         <div>Priority gyártás (8 munkanap):</div>
         <div>+{{formatNumber priorityFee}} Ft</div>
       </div>
+      {{/if}}
       {{/if}}
       <div class="summary-row total-row">
         <div>VÉGÖSSZEG:</div>
@@ -1022,7 +1063,7 @@ Köszönettel, üdvözlettel Konyor Ágnes"</p>
         <div class="cta-step">
           <div class="cta-step-number">3</div>
           <h4 class="cta-step-title">Telepítés</h4>
-          <p class="cta-step-desc">Standard: 4–6 hét, vagy Priority: 8 munkanap (+20 000 Ft, alap termékekre)</p>
+          <p class="cta-step-desc">Standard: 4–6 hét, Priority: 8 munkanap (+20 000 Ft), vagy All-in: 15% kedvezmény + Priority előre fizetéssel</p>
         </div>
       </div>
       
