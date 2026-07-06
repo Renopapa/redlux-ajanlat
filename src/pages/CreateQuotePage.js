@@ -72,7 +72,6 @@ function CreateQuotePage() {
   const [loading, setLoading] = useState(false);
   //const [availableColors, setAvailableColors] = useState([]);
   const [personalSurvey, setPersonalSurvey] = useState(false);
-  const [priorityService, setPriorityService] = useState(false);
   const [allInService, setAllInService] = useState(false);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -178,7 +177,6 @@ const fetchProducts = async () => {
       setNotes(quoteData.notes || '');
       setSurveyor(quoteData.surveyor || '');
       setPersonalSurvey(quoteData.personalSurvey || false);
-      setPriorityService(quoteData.priorityService || false);
       setAllInService(quoteData.allInService || false);
     } else {
       console.error('Invalid quote data:', quoteData);
@@ -310,8 +308,7 @@ const fetchProducts = async () => {
       return subtotal * 0.85;
     }
     const finalDiscount = discount || 0;
-    const priorityFee = priorityService ? 20000 : 0;
-    return subtotal * (1 - finalDiscount / 100) + priorityFee;
+    return subtotal * (1 - finalDiscount / 100);
   };
 
   const handleOpenPreview = () => {
@@ -343,7 +340,6 @@ const fetchProducts = async () => {
         notes,
         surveyor,
         personalSurvey,
-        priorityService,
         allInService,
       };
       
@@ -385,7 +381,6 @@ const fetchProducts = async () => {
     setDiscount(0);
     setNotes('');
     setPersonalSurvey(false);
-    setPriorityService(false);
     setAllInService(false);
     generateClientId();
   }, []);
@@ -422,7 +417,7 @@ const handleDownloadPDF = async () => {
   try {
     const payload = {
       clientName, clientId, clientAddress, clientPhone, clientEmail, clientNeeds,
-      quoteItems, total: calculateTotal(), discount, notes, priorityService, allInService,
+      quoteItems, total: calculateTotal(), discount, notes, allInService,
     };
 
     const response = await axios.post(`${API_URL}/generate-pdf`, payload, {
@@ -647,27 +642,8 @@ const handleDownloadPDF = async () => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={priorityService}
-                  onChange={(e) => {
-                    setPriorityService(e.target.checked);
-                    if (e.target.checked) setAllInService(false);
-                  }}
-                  name="priorityService"
-                  disabled={allInService}
-                />
-              }
-              label="Priority gyártás (+20 000 Ft, 8 munkanap – csak alap termékekre, belső jelölés)"
-            />
-          </Grid>
-              <Grid item xs={12}>
-            <FormControlLabel
-              control={
-                <Checkbox
                   checked={allInService}
-                  onChange={(e) => {
-                    setAllInService(e.target.checked);
-                    if (e.target.checked) setPriorityService(false);
-                  }}
+                  onChange={(e) => setAllInService(e.target.checked)}
                   name="allInService"
                 />
               }
