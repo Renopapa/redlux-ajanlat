@@ -33,7 +33,7 @@ Handlebars.registerHelper('subtract', (a, b) => {
   return (a || 0) - (b || 0);
 });
 
-const ALL_IN_DISCOUNT_PERCENT = 15;
+const ALL_IN_DISCOUNT_PERCENT = 20;
 
 const generatePDF = async (quoteData) => {
   try {

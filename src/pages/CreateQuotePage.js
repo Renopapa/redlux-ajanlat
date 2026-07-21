@@ -305,7 +305,7 @@ const fetchProducts = async () => {
   const calculateTotal = () => {
     const subtotal = quoteItems.reduce((sum, item) => sum + item.totalPrice, 0);
     if (allInService) {
-      return subtotal * 0.85;
+      return subtotal * 0.8;
     }
     const finalDiscount = discount || 0;
     return subtotal * (1 - finalDiscount / 100);
@@ -647,7 +647,7 @@ const handleDownloadPDF = async () => {
                   name="allInService"
                 />
               }
-              label="All-in csomag (−15%, teljes összeg előre, Priority beszerelés)"
+              label="All-in csomag (−20%, teljes összeg előre fizetése)"
             />
           </Grid>
               <Grid item xs={12} sm={6}>
