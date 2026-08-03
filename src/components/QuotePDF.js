@@ -82,7 +82,7 @@ const QuotePDF = ({ clientName, clientId, clientAddress, clientPhone, clientEmai
           {'\n'}- Megrendelése az előlegszámla kiegyenlítését követően válik véglegessé.
           {'\n'}- A végösszeg tartalmazza a kiszállás és a munkadíj költségét is.
           {'\n'}- Az árak tartalmazzák az ÁFA-t.
-          {'\n'}- Várható gyártási idő: 4-6 hét
+          {'\n'}- Várható gyártási idő: 2-4 hét
           {'\n'}- Garancia: Redőnyre, szúnyoghálóra: 1 év, Motorra: 5 év
         </Text>
         
