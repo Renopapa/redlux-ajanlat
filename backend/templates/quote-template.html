@@ -1016,6 +1016,7 @@ Több száz elégedett ügyfelünk választott már minket a precíz munkavégz�
     </div>
 
     <div class="quote-footer-block">
+    {{#if showAllInOffer}}
     <div class="priority-section">
       <h4 class="priority-section-title">Spóroljon többet előre fizetéssel!</h4>
       <p class="priority-section-sub">A megrendelés teljes összegének előre fizetése esetén <strong>{{allInDiscountPercent}}% kedvezmény</strong> az All-in csomagban.</p>
@@ -1033,7 +1034,8 @@ Több száz elégedett ügyfelünk választott már minket a precíz munkavégz�
       <p class="priority-cta">Spóroljon {{allInDiscountPercent}}%-ot: válassza az All-in csomagot teljes előre fizetéssel!</p>
       {{/if}}
     </div>
-    
+    {{/if}}
+
     <div class="summary-box">
       <div class="summary-row">
         <div>Részösszeg:</div>
@@ -1171,7 +1173,7 @@ Köszönettel, üdvözlettel Konyor Ágnes"</p>
         <div class="cta-step">
           <div class="cta-step-number">3</div>
           <h4 class="cta-step-title">Telepítés</h4>
-          <p class="cta-step-desc">Gyártás és beszerelés: 2–4 hét. All-in: teljes összeg előre (−20%)</p>
+          <p class="cta-step-desc">Gyártás és beszerelés: 2–4 hét.{{#if showAllInOffer}} All-in: teljes összeg előre (−{{allInDiscountPercent}}%){{/if}}</p>
         </div>
       </div>
       

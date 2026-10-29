@@ -73,6 +73,7 @@ function CreateQuotePage() {
   //const [availableColors, setAvailableColors] = useState([]);
   const [personalSurvey, setPersonalSurvey] = useState(false);
   const [allInService, setAllInService] = useState(false);
+  const [showAllInOffer, setShowAllInOffer] = useState(false);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [clientNeeds, setClientNeeds] = useState('');
@@ -178,6 +179,7 @@ const fetchProducts = async () => {
       setSurveyor(quoteData.surveyor || '');
       setPersonalSurvey(quoteData.personalSurvey || false);
       setAllInService(quoteData.allInService || false);
+      setShowAllInOffer(quoteData.showAllInOffer || false);
     } else {
       console.error('Invalid quote data:', quoteData);
       setError('Érvénytelen árajánlat adat');
@@ -341,6 +343,7 @@ const fetchProducts = async () => {
         surveyor,
         personalSurvey,
         allInService,
+        showAllInOffer,
       };
       
       let response;
@@ -382,6 +385,7 @@ const fetchProducts = async () => {
     setNotes('');
     setPersonalSurvey(false);
     setAllInService(false);
+    setShowAllInOffer(false);
     generateClientId();
   }, []);
 
@@ -417,7 +421,7 @@ const handleDownloadPDF = async () => {
   try {
     const payload = {
       clientName, clientId, clientAddress, clientPhone, clientEmail, clientNeeds,
-      quoteItems, total: calculateTotal(), discount, notes, allInService,
+      quoteItems, total: calculateTotal(), discount, notes, allInService, showAllInOffer,
     };
 
     const response = await axios.post(`${API_URL}/generate-pdf`, payload, {
@@ -636,6 +640,19 @@ const handleDownloadPDF = async () => {
                 />
               }
               label="Személyes felmérés"
+            />
+          </Grid>
+              <Grid item xs={12}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={showAllInOffer || allInService}
+                  onChange={(e) => setShowAllInOffer(e.target.checked)}
+                  disabled={allInService}
+                  name="showAllInOffer"
+                />
+              }
+              label="All-in ajánlat (−20%) megjelenítése a PDF-ben"
             />
           </Grid>
               <Grid item xs={12}>

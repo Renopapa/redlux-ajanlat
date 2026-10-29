@@ -86,6 +86,8 @@ const generatePDF = async (quoteData) => {
       itemDiscountsTotal: itemDiscountsTotal > 0 ? itemDiscountsTotal : null,
       finalDiscountAmount,
       finalTotal,
+      // Az All-in ajánlat blokk csak bekapcsolva, vagy alkalmazott All-in csomag esetén jelenik meg
+      showAllInOffer: Boolean(quoteData.showAllInOffer || quoteData.allInService),
       allInDiscountPercent: ALL_IN_DISCOUNT_PERCENT,
       allInDiscountAmount,
       allInTotal,

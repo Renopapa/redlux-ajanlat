@@ -42,6 +42,7 @@ const quoteSchema = new mongoose.Schema({
   personalSurvey: { type: Boolean, default: false },
   priorityService: { type: Boolean, default: false },
   allInService: { type: Boolean, default: false },
+  showAllInOffer: { type: Boolean, default: false },
   version: { type: Number, default: 1 },
   createdAt: { type: Date, default: Date.now },
   notes: String,
